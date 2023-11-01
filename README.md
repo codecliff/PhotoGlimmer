@@ -73,6 +73,11 @@ So, if you are using the .deb or .AppImage version, you need to have only **Pyth
 
 # Installation and Running: 
 
+> [!NOTE]
+> Binary installation files can be found on the Release Page.
+> [Latest version is v0.1.2 Pre Relase](https://github.com/codecliff/PhotoGlimmer/releases/tag/v0.1.2). 
+
+
 ## Method 1. Appimage (Any Linux):
 
 - Just download the Appimage file and execute. 
