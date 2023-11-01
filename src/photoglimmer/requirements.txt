@@ -1,0 +1,7 @@
+"opencv-contrib-python~=4.8",
+"PySide2~=5.15",
+"mediapipe~=0.10",
+"qt-material~=2.14",
+"numpy~=1.19",
+"pyqtdarktheme ~=2.1.0",
+"splines ~= 0.3.0"
