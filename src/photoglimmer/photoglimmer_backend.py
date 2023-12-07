@@ -1,4 +1,5 @@
 
+# ###############################################################################
 # Copyright : Rahul Singh
 # URL       : https://github.com/codecliff/PhotoGlimmer
 # License   : LGPL 
@@ -8,11 +9,13 @@
 # Backend for the applicaiton. 
 # Is totally frontend-agnostic and can be plugged in with another UI  
 # Multithreading is to be handled by the frontend 
+# ###############################################################################
 import cv2
 import mediapipe as mp
 import numpy as np
 import os
 import splines
+import piexif, piexif.helper
 from math import exp 
 # from memory_profiler import profile
 mp_drawing = mp.solutions.drawing_utils
@@ -33,8 +36,8 @@ imageAdjustMode = "HSV"
 tempdirpath= ""
 originalImgPath="" 
 scaledImgpath = "" 
-fname_maskImg="mask.jpg"
-fname_maskImgBlurred="blurred_mask.jpg"
+fname_maskImg="mask.jpg" 
+fname_maskImgBlurred="blurred_mask.jpg" 
 scaleFactor=1.0
 
 
@@ -160,6 +163,27 @@ def  createMaskedBrightness(sourceimg_bgr, maskimgimg_graybgr , originalImage=Fa
     if postprocess_it: 
         addWted_bgr=splineStretch(addWted_bgr)   
     return addWted_bgr
+
+
+def  transferAlteredExif(sourceimgpath:str , outputimgpath:str  ):
+    try:
+        exif_dict = piexif.load(sourceimgpath) 
+        if len(exif_dict['0th'])==0 :
+            return    
+        new_comment= u"PhotoGlimmer"
+        if exif_dict['Exif'].get(37510) is not None:
+            old_comment= str(exif_dict['Exif'][37510] , "utf-8")
+            print(f"old comment was {old_comment}") 
+            new_comment= old_comment + u", PhotoGlimmer"                        
+        else:
+            print("no userComment entry")
+        print(f"new_comment will be {new_comment}")                
+        newcomment= piexif.helper.UserComment.dump(new_comment)    
+        exif_dict["Exif"][piexif.ExifIFD.UserComment] = newcomment
+        exif_bytes = piexif.dump(exif_dict)    
+        piexif.insert(exif_bytes, outputimgpath)
+    except Exception as e:
+        print(f"transferAlteredExif: {e}")    
 
 
 def  processImageFinal(isOriginalImage=False , isSegmentationNeeded=True  ):

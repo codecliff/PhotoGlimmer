@@ -1,4 +1,5 @@
 
+# ###############################################################################
 # Copyright : Rahul Singh
 # URL       : https://github.com/codecliff/PhotoGlimmer
 # License   : LGPL 
@@ -6,22 +7,23 @@
 # Disclaimer: No warranties, stated or implied.   
 #  Description:  
 # Entry point for the applicaiton. 
-# Handles all UI related activities and some ui stylization, 
-# Though the UI is almost entirely defined in a .ui file generated with QT Designer 
+# Handles all UI related activities and some ui stylization, even though 
+# the UI is almost entirely defined in a .ui file created using QT Designer 
+# ###############################################################################
+#imports
 import os, sys, shutil, time, tempfile
 # QT 
 from PySide2 import QtWidgets,  QtCore 
 from PySide2.QtUiTools import QUiLoader
-from PySide2.QtGui import QPixmap, QIcon, QMovie 
-from PySide2.QtCore import QThreadPool, QFile 
+from PySide2.QtGui import QPixmap, QIcon, QMovie, QKeySequence
+from PySide2.QtCore import QThreadPool, QFile  
 from PySide2.QtWidgets import QStyle, QMessageBox, QAction, QGridLayout
 # Only if using qdarktheme style 
 import  qdarktheme
 # This application
-# import imagebrighener_backend
-# from threadwork import *
 import photoglimmer.photoglimmer_backend as photoglimmer_backend
 from photoglimmer.threadwork import *
+import photoglimmer.customfiledialog as customfiledialog
 #/**   START Patch FOR cv2+qt plugin **/
 # https://forum.qt.io/post/654289
 ci_build_and_not_headless = False
@@ -40,6 +42,7 @@ iconpath = "resources/appicon.png"
 progbarpath = "resources/spinner.gif"
 tempdir = None  
 tempImage_original = "tmp_original.jpg"
+preferSystemFileDlg= False 
 
 
 class  Ui(QtWidgets.QMainWindow):
@@ -130,6 +133,15 @@ class  Ui(QtWidgets.QMainWindow):
         self.setUpMenubar()
 
 
+    def  getImagesDirectory(self):
+        from  PySide2.QtCore import QStandardPaths
+        pth=QStandardPaths.PicturesLocation 
+        sysimgfolder= str(QStandardPaths.writableLocation(pth) )
+        if os.path.exists(sysimgfolder): 
+            return sysimgfolder 
+        return None
+
+
     def  setAppStyleSheets(self):
         self.sliderSegMode.setStyleSheet('''
                                          QSlider::handle:horizontal {
@@ -148,8 +160,11 @@ class  Ui(QtWidgets.QMainWindow):
         self.menuAbout = self.findChild(QAction, "action_about")
         self.menuParFolder = self.findChild(QAction, "action_ParentFolder")                 
         self.menuOpen.triggered.connect(self.goBrowse)
+        self.menuOpen.setShortcut(QKeySequence("Ctrl+O"))
         self.menuSave.triggered.connect(self.goSave)
+        self.menuSave.setShortcut(QKeySequence("Ctrl+S"))
         self.menuQuit.triggered.connect(self.close) 
+        self.menuQuit.setShortcut(QKeySequence("Ctrl+Q"))
         self.menuParFolder.triggered.connect(self.openSystemExplorer)
         self.menuAbout.triggered.connect(self.openHelpURL) 
 
@@ -306,16 +321,22 @@ class  Ui(QtWidgets.QMainWindow):
 
     def  goBrowse(self):
         from os.path import expanduser
-        homedir = expanduser("~")
+        homedir = self.getImagesDirectory()
+        if (homedir is None):
+            homedir = expanduser("~")
         if (photoglimmer_backend.originalImgPath and 
             photoglimmer_backend.originalImgPath.strip() and  
             os.path.exists(photoglimmer_backend.originalImgPath)):
                 homedir= os. path. dirname(photoglimmer_backend.originalImgPath)
-        fname = QtWidgets.QFileDialog.getOpenFileName(
+        fname=[""]
+        if preferSystemFileDlg :
+            fname = QtWidgets.QFileDialog.getOpenFileName(
             self,
             caption=f"{appname}: open image file",
             dir= homedir, 
             filter=("Image Files (*.png *.jpg *.bmp *.webp *.JPG *.jpeg *.JPEG )"))
+        else:         
+            fname = customfiledialog.QFileDialogPreview.getOpenFileName(parent=self,dir= homedir )
         if (fname[0] == ''):
             return
         if not self.isImageURL(  fname[0] ):
@@ -393,6 +414,8 @@ class  Ui(QtWidgets.QMainWindow):
             pass   
         self.stopBusySpinner()
         if(fname is not None):
+            photoglimmer_backend.transferAlteredExif( photoglimmer_backend.originalImgPath,
+                                                            fname )                    
             self.showMessage( text="File Saved",  message=f"Saved {fname}" )
         self.enableSliders()
         self.processImage()  

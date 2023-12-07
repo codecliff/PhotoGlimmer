@@ -1,0 +1,95 @@
+# This project was generated with 0.3.15 using template: https://github.com/beeware/briefcase-template@v0.3.15
+[tool.briefcase]
+project_name = "PhotoGlimmer"
+bundle = "com.github.photoglimmer"
+version = "0.2.0"
+url = "https://github.com/codecliff/PhotoGlimmer"
+license = "LGPL license"
+author = "Rahul singh"
+author_email = "codecliff@users.noreply.github.com"
+
+[tool.briefcase.app.photoglimmer]
+formal_name = "PhotoGlimmer"
+description = "AI powered photo editor to tweak illumination on people without altering the background"
+long_description = """
+ Shine a light on individuals with the help of a few sliders, without altering the scene. \
+ This AI-powered photo editor lets you precisely adjust illumination on people, \
+ leaving the background untouched.
+ """
+
+icon = "src/photoglimmer/icons/appicon"
+sources = [
+    "src/photoglimmer",
+]
+test_sources = [
+    "tests",
+]
+
+requires = [
+"opencv-contrib-python~=4.8",
+"PySide2~=5.15",
+"mediapipe~=0.10",
+"numpy~=1.19",
+"pyqtdarktheme ~=2.1.0",
+"splines ~= 0.3.0",
+"piexif ~= 1.1.3"
+]
+test_requires = [
+    "pytest",
+]
+
+[tool.briefcase.app.photoglimmer.macOS]
+requires = [
+    "std-nslog~=1.0.0"
+]
+
+[tool.briefcase.app.photoglimmer.linux]
+requires = [
+]
+
+[tool.briefcase.app.photoglimmer.linux.system.debian]
+system_requires = [
+]
+
+system_runtime_requires = [
+]
+
+[tool.briefcase.app.photoglimmer.linux.system.rhel]
+system_requires = [
+]
+
+system_runtime_requires = [
+]
+
+[tool.briefcase.app.photoglimmer.linux.system.arch]
+system_requires = [
+]
+
+system_runtime_requires = [
+]
+
+[tool.briefcase.app.photoglimmer.linux.appimage]
+manylinux = "manylinux2014"
+
+system_requires = [
+]
+linuxdeploy_plugins = []
+
+[tool.briefcase.app.photoglimmer.linux.flatpak]
+flatpak_runtime = "org.freedesktop.Platform"
+flatpak_runtime_version = "22.08"
+flatpak_sdk = "org.freedesktop.Sdk"
+
+[tool.briefcase.app.photoglimmer.windows]
+requires = []
+
+# Mobile deployments
+[tool.briefcase.app.photoglimmer.iOS]
+supported = false
+
+[tool.briefcase.app.photoglimmer.android]
+supported = false
+
+# Web deployments
+[tool.briefcase.app.photoglimmer.web]
+supported = false

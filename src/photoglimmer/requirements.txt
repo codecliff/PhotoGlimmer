@@ -4,4 +4,6 @@
 "qt-material~=2.14",
 "numpy~=1.19",
 "pyqtdarktheme ~=2.1.0",
-"splines ~= 0.3.0"
+"splines ~= 0.3.0",
+"piexif ~= 1.1.3"
+
