@@ -1,4 +1,4 @@
-name: TryAppImageWindows
+name: WindowsRelease
 # Creates a Windows Installer using beeware-briefcase and github actions
 # Author: Rahul Singh
 # https://github.com/codecliff/PhotoGlimmer
