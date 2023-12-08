@@ -1,4 +1,4 @@
-name: TryAppImageMulti
+name: LinuxRelease
 
 # Creates a Linux Installer using beeware-briefcase and github actions
 # Generates bot Appimage and .deb files
