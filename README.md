@@ -1,6 +1,8 @@
 # PhotoGlimmer - Illuminating  People In Photos 
 #### ✨✨ The photo editor that makes you look as sharp as the landscape behind you (or the vice versa) ✨✨
 
+> [!NOTE]
+> Binary installation files can be found in the [Installation section](https://github.com/codecliff/PhotoGlimmer/releases)
 
 # About
 
@@ -73,9 +75,18 @@ So, if you are using the .deb or .AppImage version, you need to have only **Pyth
 
 # Installation and Running: 
 
+
 > [!NOTE]
-> Binary installation files can be found on the Release Page.
-> [Latest version is v0.1.2 Pre Relase](https://github.com/codecliff/PhotoGlimmer/releases/tag/v0.1.2). 
+> All Binary installation files across versions can be found on the [Release Page ](https://github.com/codecliff/PhotoGlimmer/releases)
+
+### Latest version is v0.2.0 
+ available for both [Linux and Windows ](https://github.com/codecliff/PhotoGlimmer/releases)
+ 
+ - Direct linik to  Linux   [Appimage file ](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.2.0_linux/PhotoGlimmer-0.2.0-x86_64.AppImage). 
+ - Direct linik to  Ubuntu  [.deb installer ](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.2.0_linux/photoglimmer_0.2.0-1.ubuntu-focal_amd64.deb)
+ - Direct linik to  Windows [msi installer ](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.2.0_win/PhotoGlimmer-0.2.0.msi)
+
+   
 
 
 ## Method 1. Appimage (Any Linux):
@@ -135,8 +146,9 @@ Follow these steps to install dependencies and run PhotoGlimmer :
 
 ## Known Issues/Limitations: 
 
-- As of now, the the application discards the EXIF data of the image. 
-- You cannot simultaneously edit both bakground and foreground in one session. 
+- ~~As of now, the the application discards the EXIF data of the image.~~(Implemented) 
+- You cannot simultaneously edit both bakground and foreground in one session.
+- Download size is large due to self-contained nature of application.
 - Issue Tracker is here:  [Issues](https://github.com/codecliff/linuxShort/issues)
 
 <hr/>
