@@ -1,0 +1,58 @@
+name: TryAppImageWindows
+# Creates a Windows Installer using beeware-briefcase and github actions
+# Author: Rahul Singh
+# https://github.com/codecliff/PhotoGlimmer
+# Runs manually, will prompt for release tag
+
+on:                                  #event
+  #push:
+  #  branches: [ maser ]            #note the typo
+  #pull_request:
+  #  branches: [ maser ]
+  workflow_dispatch:
+      inputs:                        #when run, ask user to input release tag
+        reltag:
+          description: "tag for release, eg v1.0.0_win"
+          required: true
+          default: "latest"       
+
+jobs:
+  build-win:
+    runs-on: windows-2019
+    env:
+      TAGNAME: ${{ inputs.reltag }}
+
+    steps:
+      - uses: actions/checkout@v2 #1
+      - uses: actions/setup-python@v3 #2
+        with:
+          python-version: '3.8.10'
+
+      - name: install dependencies #3
+        run: |          
+          python -m pip install briefcase        
+      - name: Build AppImage #4
+        run: |
+          briefcase build           
+          briefcase package                               #this creates .msi file on windows  
+
+      - uses: actions/upload-artifact@v2 #5
+        with:
+          name: linuxartifacts 
+          path: "./dist/"
+
+      - uses: marvinpinto/action-automatic-releases@latest # {{xyz}}varaibles not available in uses
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"          
+          automatic_release_tag: "${{ inputs.reltag }}" 
+          prerelease: false
+          title: "Build ${{ github.event.inputs.reltag }}"    #same as inputs.reltag 
+          files: |            
+            ./dist/*.*
+            
+
+
+          
+          
+
+          
