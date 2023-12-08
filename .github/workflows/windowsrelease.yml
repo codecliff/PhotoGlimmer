@@ -6,9 +6,9 @@ name: WindowsRelease
 
 on:                                  #event
   #push:
-  #  branches: [ maser ]            #note the typo
+  #  branches: [ master ]            
   #pull_request:
-  #  branches: [ maser ]
+  #  branches: [ master ]
   workflow_dispatch:
       inputs:                        #when run, ask user to input release tag
         reltag:
