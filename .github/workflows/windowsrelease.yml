@@ -14,7 +14,9 @@ on:                                  #event
         reltag:
           description: "tag for release, eg v1.0.0_win"
           required: true
-          default: "latest"       
+          default: "latest"
+permissions:      
+      repository-projects: write          
 
 jobs:
   build-win:
