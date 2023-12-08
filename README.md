@@ -6,13 +6,11 @@
 
 # About
 
-PhotoGlimmer is an image editing application that leverages Artifical Intelligence tools to tweak the brightness on people in photos while seamlessly preserving the background. It can handle large images and does not require a GPU. It's a totally local and offline graphical  application, primarily for Linux Desktops. 
+PhotoGlimmer is an image editing application that leverages Artifical Intelligence tools to tweak the brightness on people in photos while preserving the background. It can handle large images and does not require a GPU. It's a totally local and offline graphical  application, primarily for Linux Desktops. 
 
-It has evolved from something I had originally written to improve a number of phtoographs in my own collection. As an avid photographer I had countless  photos of family , travels,landscapes  and even  indoor parties where the background was stunning but the people in foreground were underlit and looked dim in comparison. I could see that a better illumination of faces would do a world of good to the photo, yet was not too keen on paintstakingly selecting shapes on GIMP. This app uses Mediapipe and Opencv and improves lighting on people with a couple of gentle nudgest to 2-3 slliders. 
+It has evolved from something I had originally written to improve a number of phtoographs in my own collection. As an avid photographer I had countless  photos of family, travels, landscapes  and even  indoor parties where the background was stunning but the people in foreground were underlit and looked dim in comparison. I could see that a better illumination of faces and people would do a world of good to the photo, yet was not too keen on paintstakingly selecting shapes on GIMP. This app does that. Behind the scene,it uses Mediapipe and Opencv and improves lighting on people with a couple of gentle nudgest to 2-3 slliders. 
 
-In short, if you are an AI enthusiast photographer, it is the user-friendly segmentation tool you have been thinking of deveoping yourself for last few years :-) Though it's perfectly useful for an everyday common user like me. 
-
-Unlike a phone app, Photoglimmer gives you full control of the segmentation and illumination process and it's easy to go overboard. But as you will see, it does the work in more than 95% of cases. The only caveat is that the image should not be too cluttered to segragrate foreground(people) form the background.
+Unlike similar phone app, Photoglimmer gives you full control of the segmentation and illumination process and it's easy to go overboard. But as you will see, it does the work in more than 95% of cases. The only caveat is that the image should not be too cluttered to segragrate foreground(people) form the background.
 
 
 # Screenshot
