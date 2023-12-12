@@ -2,7 +2,7 @@
 #### ✨✨ The photo editor that makes you look as sharp as the landscape behind you (or the vice versa) ✨✨
 
 > [!NOTE]
-> Binary installation files can be found in the [Installation section](#installation-and-running)
+> Binary installation files can be found in the [Installation section](#installation-)
 
 # About
 
