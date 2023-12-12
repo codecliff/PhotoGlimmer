@@ -64,6 +64,7 @@ So, if you are using the .deb or .AppImage version, you need to have only **Pyth
     - numpy~=1.19
     - pyqtdarktheme ~=2.1.0
     - splines ~= 0.3.0
+    - piexif ~= 1.1.3
 
 
 ## Tested On:
@@ -71,32 +72,30 @@ So, if you are using the .deb or .AppImage version, you need to have only **Pyth
 - Fedora Linux 35 (VM, 4 GB RAM)
 
 
-# Installation and Running: 
+# Installation : 
 
+### Latest version is v0.2.0 
+ Binaries available for both [Linux and Windows ](https://github.com/codecliff/PhotoGlimmer/releases)
+ 
+ - Direct link to  Linux   [Appimage file ](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.2.0_linux/PhotoGlimmer-0.2.0-x86_64.AppImage). (Any Linux)
+ - Direct link to  Ubuntu  [deb installer ](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.2.0_linux/photoglimmer_0.2.0-1.ubuntu-focal_amd64.deb) (Ubuntu/Debian)
+ - Direct link to  Windows [msi installer ](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.2.0_win/PhotoGlimmer-0.2.0.msi) (Windows)
 
 > [!NOTE]
 > All Binary installation files across versions can be found on the [Release Page ](https://github.com/codecliff/PhotoGlimmer/releases)
 
-### Latest version is v0.2.0 
- available for both [Linux and Windows ](https://github.com/codecliff/PhotoGlimmer/releases)
- 
- - Direct linik to  Linux   [Appimage file ](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.2.0_linux/PhotoGlimmer-0.2.0-x86_64.AppImage). 
- - Direct linik to  Ubuntu  [.deb installer ](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.2.0_linux/photoglimmer_0.2.0-1.ubuntu-focal_amd64.deb)
- - Direct linik to  Windows [msi installer ](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.2.0_win/PhotoGlimmer-0.2.0.msi)
-
-   
-
+# How to Run: 
 
 ## Method 1. Appimage (Any Linux):
 
 - Just download the Appimage file and execute. 
 - You don't need to install anything, appimages have everything and the kitchen sink bundled in.
 
-## Method 2. Install .deb (Ubuntu) : 
+## Method 2. Install .deb (Ubuntu/Debian) : 
 
-- This method gives you the better integration with OS. You can just right-click on images and open them in PhotoGlimmer
+- This method gives you the better integration with Ubuntu. You can just right-click on images and open them in PhotoGlimmer
 - All requirements are bundled in the installer itself. You don't need to install any requirements
-- Installing through this .deb file does not pollute your system environment.  Photoglimmer and all its required software is contained in its own bundle and do not interfere with versions of stuff already installed on the system 
+- Installing through this .deb file does not pollute your system environment.  Photoglimmer and all its required libraries are contained in its own bundle and do not interfere with versions of stuff already installed on the system 
 
 
 ## Method 3. Executing from source code (All OSs including Windows) :
@@ -121,14 +120,15 @@ Follow these steps to install dependencies and run PhotoGlimmer :
 
 - All editing is done with the help of 3 or 4  sliders
 - Hover over each element to know what that element does
-- Result image is previewed on the right, while the current selection mask appears as a small black and white image on left. 
+- Result image is previewed on the right
+- Current selection mask appears as a small grayscale image on left. 
 
 
 
 - **Main Sliders:**
-    + `#0969DA` Brightness and saturation  of selected area can be tweaked with the relevant slider
-    + `#0969DA` **Selection can be grown or shrunk  by using the ``Threshold`` slider**
-    + `#0969DA` **The ``Edge Blur`` slider blends the edited portion smoothly with background
+    +  Brightness and saturation  of selected area can be tweaked with the relevant slider
+    +  **Selection can be grown or shrunk  by using the ``Threshold`` slider**
+    +  **The ``Edge Blur`` slider blends the edited portion smoothly with background**
 
     
 ## Process for editing an image: 
