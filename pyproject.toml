@@ -2,7 +2,7 @@
 [tool.briefcase]
 project_name = "PhotoGlimmer"
 bundle = "com.github.photoglimmer"
-version = "0.2.0"
+version = "0.3.0"
 url = "https://github.com/codecliff/PhotoGlimmer"
 license = "LGPL license"
 author = "Rahul singh"

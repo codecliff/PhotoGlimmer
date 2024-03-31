@@ -58,7 +58,7 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>250</width>
+          <width>280</width>
           <height>0</height>
          </size>
         </property>
@@ -102,11 +102,17 @@
         <widget class="QFrame" name="frameSliders">
          <property name="geometry">
           <rect>
-           <x>20</x>
+           <x>9</x>
            <y>60</y>
-           <width>211</width>
+           <width>291</width>
            <height>511</height>
           </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>250</width>
+           <height>0</height>
+          </size>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -124,8 +130,8 @@
           <property name="geometry">
            <rect>
             <x>10</x>
-            <y>450</y>
-            <width>194</width>
+            <y>400</y>
+            <width>241</width>
             <height>52</height>
            </rect>
           </property>
@@ -159,7 +165,7 @@
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Denoise selected area&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="text">
-              <string>Blur</string>
+              <string>Denoise</string>
              </property>
              <property name="checked">
               <bool>true</bool>
@@ -220,8 +226,8 @@ color: rgb(255, 255, 255); */</string>
          <widget class="QLabel" name="label_maskimage">
           <property name="geometry">
            <rect>
-            <x>20</x>
-            <y>200</y>
+            <x>40</x>
+            <y>150</y>
             <width>171</width>
             <height>91</height>
            </rect>
@@ -253,13 +259,49 @@ background-color: rgb(85, 87, 83)</string>
          <widget class="QWidget" name="layoutWidget">
           <property name="geometry">
            <rect>
-            <x>12</x>
-            <y>300</y>
-            <width>181</width>
-            <height>133</height>
+            <x>10</x>
+            <y>270</y>
+            <width>245</width>
+            <height>82</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout">
+           <item row="0" column="0">
+            <widget class="QLabel" name="labelSeparator2_4">
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="text">
+              <string>◐</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLabel" name="labelSeparator2_2">
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="text">
+              <string>◐</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_2">
+             <property name="text">
+              <string>Threshold</string>
+             </property>
+             <property name="margin">
+              <number>5</number>
+             </property>
+            </widget>
+           </item>
            <item row="1" column="1">
             <widget class="QSlider" name="slider_thresh">
              <property name="toolTip">
@@ -285,8 +327,28 @@ background-color: rgb(85, 87, 83)</string>
              </property>
             </widget>
            </item>
-           <item row="5" column="1">
-            <widget class="QSlider" name="slider_blur">
+           <item row="1" column="2">
+            <widget class="QLCDNumber" name="lcd_thresh">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="value" stdset="0">
+              <double>42.009999999999998</double>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_9">
+             <property name="text">
+              <string>Edge Blur</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QSlider" name="slider_bluredge">
              <property name="toolTip">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Blur  selection edges &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
@@ -307,24 +369,7 @@ background-color: rgb(85, 87, 83)</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="label_2">
-             <property name="text">
-              <string>Threshold</string>
-             </property>
-             <property name="margin">
-              <number>5</number>
-             </property>
-            </widget>
-           </item>
-           <item row="5" column="0">
-            <widget class="QLabel" name="label_9">
-             <property name="text">
-              <string>Edge Blur</string>
-             </property>
-            </widget>
-           </item>
-           <item row="6" column="1">
+           <item row="2" column="2">
             <widget class="QLCDNumber" name="lcd_blur">
              <property name="maximumSize">
               <size>
@@ -337,121 +382,41 @@ background-color: rgb(85, 87, 83)</string>
              </property>
             </widget>
            </item>
-           <item row="0" column="1">
-            <widget class="QLabel" name="labelSeparator2_2">
-             <property name="styleSheet">
-              <string notr="true"/>
-             </property>
-             <property name="text">
-              <string>◐</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="1">
-            <widget class="QLCDNumber" name="lcd_thresh">
-             <property name="maximumSize">
-              <size>
-               <width>16777215</width>
-               <height>20</height>
-              </size>
-             </property>
-             <property name="value" stdset="0">
-              <double>42.009999999999998</double>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="labelSeparator2_4">
-             <property name="styleSheet">
-              <string notr="true"/>
-             </property>
-             <property name="text">
-              <string>◐</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-            </widget>
-           </item>
           </layout>
          </widget>
          <widget class="QWidget" name="layoutWidget">
           <property name="geometry">
            <rect>
-            <x>11</x>
-            <y>10</y>
-            <width>181</width>
-            <height>181</height>
+            <x>10</x>
+            <y>12</y>
+            <width>240</width>
+            <height>125</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
-           <item row="5" column="1">
-            <widget class="QSlider" name="slider_blendwt1">
-             <property name="toolTip">
-              <string>Weightage for original image</string>
+           <item row="0" column="0">
+            <widget class="QLabel" name="labelSeparator2">
+             <property name="styleSheet">
+              <string notr="true"/>
              </property>
-             <property name="minimum">
-              <number>1</number>
-             </property>
-             <property name="maximum">
-              <number>100</number>
-             </property>
-             <property name="singleStep">
-              <number>5</number>
-             </property>
-             <property name="value">
-              <number>50</number>
-             </property>
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="tickInterval">
-              <number>5</number>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="1">
-            <widget class="QSlider" name="slider_saturation">
-             <property name="toolTip">
-              <string>Color saturation</string>
-             </property>
-             <property name="minimum">
-              <number>-200</number>
-             </property>
-             <property name="maximum">
-              <number>200</number>
-             </property>
-             <property name="value">
-              <number>10</number>
-             </property>
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="tickInterval">
-              <number>5</number>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="0">
-            <widget class="QLabel" name="label_saturation">
              <property name="text">
-              <string>Saturation</string>
+              <string>◐</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
              </property>
             </widget>
            </item>
-           <item row="4" column="1">
-            <widget class="QLCDNumber" name="lcd_satur">
-             <property name="maximumSize">
-              <size>
-               <width>16777215</width>
-               <height>20</height>
-              </size>
+           <item row="0" column="1">
+            <widget class="QLabel" name="labelSeparator2_3">
+             <property name="styleSheet">
+              <string notr="true"/>
              </property>
-             <property name="value" stdset="0">
-              <double>42.009999999999998</double>
+             <property name="text">
+              <string>◐</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
              </property>
             </widget>
            </item>
@@ -459,29 +424,6 @@ background-color: rgb(85, 87, 83)</string>
             <widget class="QLabel" name="lablel_brightness">
              <property name="text">
               <string>Brightness</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <widget class="QLCDNumber" name="lcd_bright">
-             <property name="maximumSize">
-              <size>
-               <width>16777215</width>
-               <height>20</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <family>Ubuntu</family>
-               <pointsize>12</pointsize>
-               <strikeout>false</strikeout>
-              </font>
-             </property>
-             <property name="smallDecimalPoint">
-              <bool>false</bool>
-             </property>
-             <property name="value" stdset="0">
-              <double>42.009999999999998</double>
              </property>
             </widget>
            </item>
@@ -510,14 +452,104 @@ background-color: rgb(85, 87, 83)</string>
              </property>
             </widget>
            </item>
-           <item row="5" column="0">
+           <item row="1" column="2">
+            <widget class="QLCDNumber" name="lcd_bright">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <family>Ubuntu</family>
+               <pointsize>12</pointsize>
+               <strikeout>false</strikeout>
+              </font>
+             </property>
+             <property name="smallDecimalPoint">
+              <bool>false</bool>
+             </property>
+             <property name="value" stdset="0">
+              <double>42.009999999999998</double>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_saturation">
+             <property name="text">
+              <string>Saturation</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QSlider" name="slider_saturation">
+             <property name="toolTip">
+              <string>Color saturation</string>
+             </property>
+             <property name="minimum">
+              <number>-200</number>
+             </property>
+             <property name="maximum">
+              <number>200</number>
+             </property>
+             <property name="value">
+              <number>10</number>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="tickInterval">
+              <number>5</number>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="2">
+            <widget class="QLCDNumber" name="lcd_satur">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="value" stdset="0">
+              <double>42.009999999999998</double>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
             <widget class="QLabel" name="label_3">
              <property name="text">
               <string>Preserve</string>
              </property>
             </widget>
            </item>
-           <item row="6" column="1">
+           <item row="3" column="1">
+            <widget class="QSlider" name="slider_blendwt1">
+             <property name="toolTip">
+              <string>Weightage for original image</string>
+             </property>
+             <property name="minimum">
+              <number>1</number>
+             </property>
+             <property name="maximum">
+              <number>100</number>
+             </property>
+             <property name="singleStep">
+              <number>5</number>
+             </property>
+             <property name="value">
+              <number>50</number>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="tickInterval">
+              <number>5</number>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="2">
             <widget class="QLCDNumber" name="lcd_blendwt1">
              <property name="maximumSize">
               <size>
@@ -530,29 +562,54 @@ background-color: rgb(85, 87, 83)</string>
              </property>
             </widget>
            </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="labelSeparator2">
-             <property name="styleSheet">
-              <string notr="true"/>
-             </property>
+           <item row="4" column="0">
+            <widget class="QLabel" name="label_6">
              <property name="text">
-              <string>◐</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
+              <string>Bg Blur</string>
              </property>
             </widget>
            </item>
-           <item row="0" column="1">
-            <widget class="QLabel" name="labelSeparator2_3">
-             <property name="styleSheet">
-              <string notr="true"/>
+           <item row="4" column="1">
+            <widget class="QSlider" name="slider_bgblur">
+             <property name="enabled">
+              <bool>false</bool>
              </property>
-             <property name="text">
-              <string>◐</string>
+             <property name="toolTip">
+              <string>Background blur factor</string>
              </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
+             <property name="minimum">
+              <number>1</number>
+             </property>
+             <property name="maximum">
+              <number>100</number>
+             </property>
+             <property name="singleStep">
+              <number>4</number>
+             </property>
+             <property name="value">
+              <number>1</number>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="tickInterval">
+              <number>5</number>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="2">
+            <widget class="QLCDNumber" name="lcd_bgblur">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="value" stdset="0">
+              <double>0.000000000000000</double>
+             </property>
+             <property name="intValue" stdset="0">
+              <number>0</number>
              </property>
             </widget>
            </item>
@@ -784,6 +841,7 @@ background-color: rgb(85, 87, 83)</string>
      <string>Tools</string>
     </property>
     <addaction name="action_ParentFolder"/>
+    <addaction name="actionExportTransparency"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuTools"/>
@@ -822,10 +880,18 @@ background-color: rgb(85, 87, 83)</string>
   </action>
   <action name="action_ParentFolder">
    <property name="text">
-    <string>Locate</string>
+    <string>Locate On Disk</string>
    </property>
    <property name="toolTip">
     <string>Open containing folder</string>
+   </property>
+  </action>
+  <action name="actionExportTransparency">
+   <property name="text">
+    <string>FG to Clipboard</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Save Transparent png image with foreground only&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </action>
  </widget>
