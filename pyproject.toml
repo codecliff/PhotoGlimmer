@@ -1,4 +1,18 @@
-# This project was generated with 0.3.15 using template: https://github.com/beeware/briefcase-template@v0.3.15
+# ###############################################################################
+# Copyright : Rahul Singh
+# URL       : https://github.com/codecliff/PhotoGlimmer
+# License   : LGPL
+# email     : codecliff@users.noreply.github.com
+# Disclaimer: No warranties, stated or implied.
+# Description :
+# This is the configuration file for generating appimages and deb  insallers for the PhotoGlimmer project
+# IMPORTANT: Make sure that dependencies list provides EXACT VERSIONS of opencv-contrib-python and mediapipe,
+#            otherwise  install size will bloat up !
+#
+# This config file was generated with 0.3.15 using template: https://github.com/beeware/briefcase-template@v0.3.15
+# ###############################################################################
+
+
 [tool.briefcase]
 project_name = "PhotoGlimmer"
 bundle = "com.github.photoglimmer"
@@ -26,9 +40,9 @@ test_sources = [
 ]
 
 requires = [
-"opencv-contrib-python~=4.8",
+"opencv-contrib-python==4.8.1.78",
 "PySide2~=5.15",
-"mediapipe~=0.10",
+"mediapipe==0.10.7",
 "numpy~=1.19",
 "pyqtdarktheme ~=2.1.0",
 "splines ~= 0.3.0",

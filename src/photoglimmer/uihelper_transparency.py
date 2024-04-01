@@ -1,7 +1,7 @@
 
 # import backend
 import os
-import photoglimmer_backend as backend
+import photoglimmer.photoglimmer_backend as backend
 # all backend variable set by frontend have to be provided as funciton parameters 
 
 

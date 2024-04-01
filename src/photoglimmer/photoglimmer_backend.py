@@ -15,11 +15,11 @@ import mediapipe as mp
 import numpy as np
 import os, shutil
 from math import exp
-from imgparams import *
-from photoglimmer_imgtweaker import *
-from photoglimmer_masking import *
-from photoglimmer_exif import *
-from photoglimmer_imagelayers import *
+from photoglimmer.imgparams import *
+from photoglimmer.photoglimmer_imgtweaker import *
+from photoglimmer.photoglimmer_masking import *
+from photoglimmer.photoglimmer_exif import *
+from photoglimmer.photoglimmer_imagelayers import *
 from photoglimmer.photoglimmer_arraylevel import *
 # from memory_profiler import profile
 seg_mode="FORE" 
