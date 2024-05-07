@@ -1,16 +1,40 @@
 # PhotoGlimmer - Illuminating  People In Photos 
 #### ✨✨ The photo editor that makes you look as sharp as the landscape behind you (or the vice versa) ✨✨
 
-> [!NOTE]
-> Binary installation files can be found in the [Installation section](#installation-)
 
-# About
+#### ✨✨ New Features In Version 0.3 ✨✨
+        * Seamless foreground/background switching         
+        * Background Defocus 
+        * RAM usage of many operations reduced by 60%
+        * Image Preview in File Open dialog 
+        * Copy Foreground to clipboard  
 
-PhotoGlimmer is an image editing application that leverages Artifical Intelligence tools to tweak the brightness on people in photos while preserving the background. It can handle large images and does not require a GPU. It's a totally local and offline graphical  application, primarily for Linux Desktops. 
 
-It has evolved from something I had originally written to improve a number of phtoographs in my own collection. As an avid photographer I had countless  photos of family, travels, landscapes  and even  indoor parties where the background was stunning but the people in foreground were underlit and looked dim in comparison. I could see that a better illumination of faces and people would do a world of good to the photo, yet was not too keen on paintstakingly selecting shapes on GIMP. This app does that. Behind the scene,it uses Mediapipe and Opencv and improves lighting on people with a couple of gentle nudgest to 2-3 slliders. 
 
-Unlike similar phone app, Photoglimmer gives you full control of the segmentation and illumination process and it's easy to go overboard. But as you will see, it does the work in more than 95% of cases. The only caveat is that the image should not be too cluttered to segragrate foreground(people) form the background.
+#### ✨✨ Download Version 0.3 Binaries ✨✨         
+        * Ubuntu .deb installer
+        * Linux Appimage
+        * Windows installer 
+
+
+  
+
+
+
+# About PhotoGlimmer
+
+PhotoGlimmer is an image editing application that leverages Artificial Intelligence tools to separate people in the image from the background, and allows you to tweak the two separately. 
+
+Therefore, you can brighten all the people in an image while darkening or softening the background, or vice versa.
+
+
+It can handle large images and does not require a GPU. It's a totally local and offline graphical  application, primarily for Linux Desktops. 
+
+It has evolved from something I had originally written to improve a number of photographs in my own collection. As an avid photographer I had countless  photos of family , travels,landscapes  and even  indoor parties where the background was stunning but the people in foreground were underlit and looked dim in comparison. I could see that a better illumination of faces would do a world of good to the photo, yet was not too keen on painstakingly selecting shapes on GIMP. This app uses Mediapipe and Opencv and improves lighting on people with a couple of gentle nudges to 2-3 sliders. 
+
+In short, if you are an AI enthusiast photographer, it is the user-friendly segmentation tool you have been thinking of developing yourself for last few years :-) Though it's perfectly useful for an everyday common user like me. 
+
+Beware- Unlike a phone app, PhotoGlimmer gives you full control of the segmentation and illumination process and it's easy to go overboard. But as you will see, it does the work in more than 95% of cases. The only caveat is that the image should not be too cluttered to segregate foreground(people) form the background.
 
 
 # Screenshot
@@ -24,31 +48,41 @@ Unlike similar phone app, Photoglimmer gives you full control of the segmentatio
 
 
 # Features
+- **Smart people identification:** PhotoGlimmer's intelligent algorithms demarks people and background in an image
 
-- ** Foreground/People/Face Lighting**: PhotoGlimmer intelligently detects people in your photos and helps you manually  enhance the lighting for a natural and appealing look. You can both brighten and darken the people in foreground.
+- **No need of manual masking** 
 
-- ** Background Illumination **: Toggle a switch and you can chane the luminosity of background. 
+- ** Foreground/People/Face Lighting**: 
+
+- ** Background Illumination  **
+
+- ** Background Defocus (Blur)  ** 
+
+- **Seamless toggle between background and foreground **
+
 
 - **Background Preservation**: Say goodbye to painstaking masking and cropping. A few nudges at the sliders ensure that your enhanced foreground blend seamlessly with the original background.
 
-- **Easy Interface**: PhotoGlimmer aims for intuitive and easy-to-use interface, making it accessible for users of all levels.
+- **Lean and Intuitive Interface - just some sliders **:  
 
-- **GPU Not Required**:  PhotoGlimmer works on CPU and does not require a GPU .  
+- **GPU Not Required**:  
 
 - **Large Image Sizes**:  PhotoGlimmer can handle large image dimensions like 6000x4000 megapixels (10-15 MBs) 
 
 - **Local Processing**: Resides completely on your computer.
 
-- **Self contained**: Instalaltion does not mess with system's python setup. 
+- **Self contained**: Installation does not mess with system's python setup. 
 
 - **Privacy**: Local processing.Therefore no data is sent to any servers.
+
+- **Retains Exif Data**
 
 
 # Requirements
 
 ## Packaged/Installable  version: 
 
-The packaged/Installable  version of PhotoGlimmer includes all its deprendencies and **the user does NOT need to isntall anything** other than Python 3.8+ 
+The packaged/Installable  version of PhotoGlimmer includes all its dependencies and **the user does NOT need to install anything** other than Python 3.8+ 
 
 So, if you are using the .deb or .AppImage version, you need to have only **Python version 3.8 or above**
 
@@ -64,38 +98,32 @@ So, if you are using the .deb or .AppImage version, you need to have only **Pyth
     - numpy~=1.19
     - pyqtdarktheme ~=2.1.0
     - splines ~= 0.3.0
-    - piexif ~= 1.1.3
 
 
 ## Tested On:
-- Ubuntu 20.04 
+- Ubuntu 20.04,22.04 
 - Fedora Linux 35 (VM, 4 GB RAM)
+- Windows10
 
 
-# Installation : 
 
-### Latest version is v0.2.0 
- Binaries available for both [Linux and Windows ](https://github.com/codecliff/PhotoGlimmer/releases)
- 
- - Direct link to  Linux   [Appimage file ](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.2.0_linux/PhotoGlimmer-0.2.0-x86_64.AppImage). (Any Linux)
- - Direct link to  Ubuntu  [deb installer ](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.2.0_linux/photoglimmer_0.2.0-1.ubuntu-focal_amd64.deb) (Ubuntu/Debian)
- - Direct link to  Windows [msi installer ](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.2.0_win/PhotoGlimmer-0.2.0.msi) (Windows)
+# Installation and Running: 
 
 > [!NOTE]
-> All Binary installation files across versions can be found on the [Release Page ](https://github.com/codecliff/PhotoGlimmer/releases)
+> Binary installation files can be found on the Release Page.
+> [Latest version is v0.1.2 Pre Release](https://github.com/codecliff/PhotoGlimmer/releases/tag/v0.1.2). 
 
-# How to Run: 
 
 ## Method 1. Appimage (Any Linux):
 
 - Just download the Appimage file and execute. 
 - You don't need to install anything, appimages have everything and the kitchen sink bundled in.
 
-## Method 2. Install .deb (Ubuntu/Debian) : 
+## Method 2. Install .deb (Ubuntu) : 
 
-- This method gives you the better integration with Ubuntu. You can just right-click on images and open them in PhotoGlimmer
+- This method gives you the better integration with OS. You can just right-click on images and open them in PhotoGlimmer
 - All requirements are bundled in the installer itself. You don't need to install any requirements
-- Installing through this .deb file does not pollute your system environment.  Photoglimmer and all its required libraries are contained in its own bundle and do not interfere with versions of stuff already installed on the system 
+- Installing through this .deb file does not pollute your system environment.  Photoglimmer and all its required software is contained in its own bundle and do not interfere with versions of stuff already installed on the system 
 
 
 ## Method 3. Executing from source code (All OSs including Windows) :
@@ -120,15 +148,14 @@ Follow these steps to install dependencies and run PhotoGlimmer :
 
 - All editing is done with the help of 3 or 4  sliders
 - Hover over each element to know what that element does
-- Result image is previewed on the right
-- Current selection mask appears as a small grayscale image on left. 
+- Result image is previewed on the right, while the current selection mask appears as a small black and white image on left. 
 
 
 
 - **Main Sliders:**
-    +  Brightness and saturation  of selected area can be tweaked with the relevant slider
-    +  **Selection can be grown or shrunk  by using the ``Threshold`` slider**
-    +  **The ``Edge Blur`` slider blends the edited portion smoothly with background**
+    + `#0969DA` Brightness and saturation  of selected area can be tweaked with the relevant slider
+    + `#0969DA` **Selection can be grown or shrunk  by using the ``Threshold`` slider**
+    + `#0969DA` **The ``Edge Blur`` slider blends the edited portion smoothly with background
 
     
 ## Process for editing an image: 
@@ -144,23 +171,25 @@ Follow these steps to install dependencies and run PhotoGlimmer :
 
 ## Known Issues/Limitations: 
 
-- ~~As of now, the the application discards the EXIF data of the image.~~(Implemented) 
-- You cannot simultaneously edit both bakground and foreground in one session.
-- Download size is large due to self-contained nature of application.
-- Issue Tracker is here:  [Issues](https://github.com/codecliff/linuxShort/issues)
+- <strike>As of now, the the application discards the EXIF data of the image. (Implemented in V 0.3.0)</strike> 
+- <strike>You cannot simultaneously edit both background and foreground in one session. (Implemented in V 0.3.0)</strike> 
+- No Preference Dialog
+- Reset messes up image display height
+- Issue Tracker is here:  [Issues](https://github.com/codecliff/photoglimmer/issues)
 
 <hr/>
 
 
-## Acknowledgements:
-- Mediapipe
-- Opencv
-- qdarktheme
-- StackOverflow contributos (links in source code) 
+## Acknowledgments:
+- [Mediapipe](https://developers.google.com/mediapipe) 
+- [Opencv](https://opencv.org/)
+- [PyQtDarkTheme](https://github.com/5yutan5/PyQtDarkTheme)
+- [PyExif](https://pypi.org/user/edleafe/#)
+- StackOverflow contributors (links in source code) 
 
 
 ## License
-This Software is released under the [LGPL-2.1  License](https://opensource.org/license/lgpl-2-1/) :
+This Software is released under the [LGPL-2.1  License](https://open source.org/license/lgpl-2-1/){:target="_blank"} :
 
 
 
