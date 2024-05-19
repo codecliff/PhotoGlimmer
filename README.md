@@ -42,7 +42,7 @@ Beware- Unlike a phone app, PhotoGlimmer gives you full control of the segmentat
 
 
 <p align="center">
-  <img width="1000" height="526" src="screenshot_photoglimmer_03", alt= "Screenshot of PhotoGlimmer image editor"/>
+  <img width="1000" height="526" src="screenshot_photoglimmer_03.png", alt= "Screenshot of PhotoGlimmer image editor"/>
   <br> Photo Credit: <a href="https://www.flickr.com/photos/portishead520/16524721706/#">Flickr cc </a> 
 </p>
 
