@@ -25,6 +25,7 @@ import photoglimmer.photoglimmer_backend as photoglimmer_backend
 from photoglimmer.threadwork import *
 import photoglimmer.customfiledialog as customfiledialog
 import photoglimmer.uihelper_transparency 
+import cv2
 #/**   START Patch FOR cv2+qt plugin **/
 # https://forum.qt.io/post/654289
 ci_build_and_not_headless = False
@@ -477,7 +478,7 @@ class  Ui(QtWidgets.QMainWindow):
             isOriginalImage=True, isSegmentationNeeded= False,
             isTweakingNeeded=True )
         self.tempimage = self.createTempFile(fname=tempImage_original,
-                                             img=result_image)
+                                             img=result_image, jpegqual=97)
         return
 
 
@@ -598,11 +599,12 @@ class  Ui(QtWidgets.QMainWindow):
         photoglimmer_backend.tempdirpath = tempd.name
 
 
-    def  createTempFile(self, fname, img):
+    def  createTempFile(self, fname, img,jpegqual=100):
         f = os.path.join(tempdir.name, fname)
         if (img.shape[-1]==4):
             f+=".png"
-        photoglimmer_backend.cv2.imwrite(img=img, filename=f)
+        photoglimmer_backend.cv2.imwrite(img=img, filename=f, 
+                                         params=[cv2.IMWRITE_JPEG_QUALITY, jpegqual] )
         return f
 
 

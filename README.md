@@ -42,9 +42,17 @@ Beware- Unlike a phone app, PhotoGlimmer gives you full control of the segmentat
 
 
 <p align="center">
-  <img width="1000" height="526" src="photoglimmer_screenshot_1000px.png", alt= "Screenshot of PhotoGlimmer image editor"/>
-  <br> Photo Credit: <a href="https://www.flickr.com/photos/tomvereenooghe/#">Flickr cc </a> 
+  <img width="1000" height="526" src="screenshot_photoglimmer_03", alt= "Screenshot of PhotoGlimmer image editor"/>
+  <br> Photo Credit: <a href="https://www.flickr.com/photos/portishead520/16524721706/#">Flickr cc </a> 
 </p>
+
+# Samples
+
+<p align="center">
+  <img width="1000" height="666" src="photoglimmer_collage_smaller.jpg", alt= "Sample results for PhotoGlimmer image editor"/>
+  <br> Photo Credit: <a href="https://www.flickr.com/photos/portishead520/16524721706/#">Flickr cc </a> 
+</p>
+
 
 
 # Features
@@ -54,7 +62,7 @@ Beware- Unlike a phone app, PhotoGlimmer gives you full control of the segmentat
 
 - ** Foreground/People/Face Lighting**: 
 
-- ** Background Illumination  **
+- ** Background Illumination/Darkening  **
 
 - ** Background Defocus (Blur)  ** 
 
@@ -103,7 +111,7 @@ So, if you are using the .deb or .AppImage version, you need to have only **Pyth
 ## Tested On:
 - Ubuntu 20.04,22.04 
 - Fedora Linux 35 (VM, 4 GB RAM)
-- Windows10
+- Windows11
 
 
 
@@ -181,10 +189,10 @@ Follow these steps to install dependencies and run PhotoGlimmer :
 
 
 ## Acknowledgments:
-- [Mediapipe](https://developers.google.com/mediapipe) 
-- [Opencv](https://opencv.org/)
-- [PyQtDarkTheme](https://github.com/5yutan5/PyQtDarkTheme)
-- [PyExif](https://pypi.org/user/edleafe/#)
+- [Mediapipe](https://developers.google.com/mediapipe){:target="_blank"} 
+- [Opencv](https://opencv.org/){:target="_blank"}
+- [PyQtDarkTheme](https://github.com/5yutan5/PyQtDarkTheme){:target="_blank"}
+- [PyExif](https://pypi.org/user/edleafe/){:target="_blank"}
 - StackOverflow contributors (links in source code) 
 
 

@@ -50,8 +50,8 @@ def  createSegmentationMask_Improved(imgpath, thresh,
     # https://stackoverflow.com/a/60869657/5132823 
     img_cropped= image_copy_bgr[Y:Y+H, X:X+W]    
     croppedimgpath= os.path.join(tempdirpath,"img_cropped.jpg") 
-    cv2.imwrite(croppedimgpath, img_cropped)   
+    cv2.imwrite(croppedimgpath, img_cropped, params=[cv2.IMWRITE_JPEG_QUALITY, 100])   
     croppedimg_mask_graybgr= __createSegmentationMask( croppedimgpath, thresh)
     mask_image_graybgr[Y:Y+H, X:X+W] = croppedimg_mask_graybgr    
-    cv2.imwrite(os.path.join(tempdirpath,fname_maskImg), mask_image_graybgr)         
+    cv2.imwrite(os.path.join(tempdirpath,fname_maskImg), mask_image_graybgr, params=[cv2.IMWRITE_JPEG_QUALITY, 100] )         
     return mask_image_graybgr    

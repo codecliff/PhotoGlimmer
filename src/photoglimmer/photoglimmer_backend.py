@@ -57,7 +57,7 @@ def  initializeImageObjects():
 def  setupWorkingImages(scaledimg_bgr):
     global scaledImgpath, resultImgPath
     scaledImgpath = os.path.join(tempdirpath, "working_image.jpg")
-    cv2.imwrite(scaledImgpath, scaledimg_bgr)
+    cv2.imwrite(scaledImgpath, scaledimg_bgr, params=[cv2.IMWRITE_JPEG_QUALITY, 100])
     resultImgPath = os.path.join(tempdirpath, fname_resultimg)
     shutil.copyfile(src=scaledImgpath, dst=fgImgpath)
     shutil.copyfile(src=scaledImgpath, dst=bgImgpath)
@@ -89,7 +89,7 @@ def  tweakAndSaveImage( sourceimg_bgr , imglayer_param):
                                           value_fact=imglayer_param.brightness)
     if currImg.denoise_it:
         result_bgr = deNoiseImage(result_bgr )
-    cv2.imwrite( filename=imglayer_param.imgpath, img=result_bgr  )
+    cv2.imwrite( filename=imglayer_param.imgpath, img=result_bgr ,params=[cv2.IMWRITE_JPEG_QUALITY, 100] )
     return result_bgr
 
 
@@ -99,7 +99,7 @@ def  blurAndSaveMask(imglayer_param,mask_graybgr, originalImage=False ):
         blur_edge_tmp = int(imglayer_param.blur_edge/scaleFactor)
     blurred_mask_graybgr = cv2.blur(mask_graybgr, (blur_edge_tmp, blur_edge_tmp),
                             anchor=(-1,-1),borderType= cv2.BORDER_DEFAULT) 
-    cv2.imwrite(os.path.join(tempdirpath, fname_maskImgBlurred), blurred_mask_graybgr)
+    cv2.imwrite(os.path.join(tempdirpath, fname_maskImgBlurred), blurred_mask_graybgr, params=[cv2.IMWRITE_JPEG_QUALITY, 100])
     return blurred_mask_graybgr
 
 
@@ -126,7 +126,7 @@ def  createMaskedBrightness(sourceimg_bgr, maskimgimg_graybgr ,
                               ImgParams.blendweight_img1)
     if ImgParams.postprocess_it:
         addWted_bgr=splineStretch(addWted_bgr)
-    cv2.imwrite(filename=resultImgPath, img= addWted_bgr)
+    cv2.imwrite(filename=resultImgPath, img= addWted_bgr, params=[cv2.IMWRITE_JPEG_QUALITY, 95])
     return addWted_bgr
 
 
@@ -198,7 +198,7 @@ def  saveTransparentImage(imgbgr, mask_graybgr , outfpath:str=None):
     im_gbra= createTrasnparentImage(imgbgr=imgbgr,  
                                   blurredmaskbgr= mask_graybgr)  
     if outfpath:
-        cv2.imwrite(outfpath, im_gbra)  
+        cv2.imwrite(outfpath, im_gbra, params=[cv2.IMWRITE_JPEG_QUALITY, 100])  
     return im_gbra
 
 
