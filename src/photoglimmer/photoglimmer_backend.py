@@ -2,199 +2,206 @@
 # ###############################################################################
 # Copyright : Rahul Singh
 # URL       : https://github.com/codecliff/PhotoGlimmer
-# License   : LGPL 
+# License   : LGPL
 # email     : codecliff@users.noreply.github.com
-# Disclaimer: No warranties, stated or implied.   
-#  Description : 
-# Backend for the applicaiton. 
-# Is totally frontend-agnostic and can be plugged in with another UI  
-# Multithreading is to be handled by the frontend 
+# Disclaimer: No warranties, stated or implied.
+# Description :
+# Backend for the applicaiton.
+# Is totally frontend-agnostic and can be plugged in with another UI
+# Multithreading is to be handled by the frontend
 # ###############################################################################
 import cv2
 import mediapipe as mp
 import numpy as np
-import os
-import splines
-import piexif, piexif.helper
-from math import exp 
+import os, shutil
+from math import exp
+from photoglimmer.imgparams import *
+from photoglimmer.photoglimmer_imgtweaker import *
+from photoglimmer.photoglimmer_masking import *
+from photoglimmer.photoglimmer_exif import *
+from photoglimmer.photoglimmer_imagelayers import *
+from photoglimmer.photoglimmer_arraylevel import *
 # from memory_profiler import profile
-mp_drawing = mp.solutions.drawing_utils
-mp_selfie_segmentation = mp.solutions.selfie_segmentation
 seg_mode="FORE" 
-seg_threshold = 0.5
-blendweight_img1 = 0.5
-contrast = 1.0
-brightness = 1.0
-saturation = 1.0
-alpha = 1.0
-beta = 50
-gamma = 0.4
-blur_edge=10.0
-postprocess_it=True
-denoise_it =True
 imageAdjustMode = "HSV"  
 tempdirpath= ""
 originalImgPath="" 
 scaledImgpath = "" 
-fname_maskImg="mask.jpg" 
-fname_maskImgBlurred="blurred_mask.jpg" 
-scaleFactor=1.0
+resultImgPath="" 
+fname_maskImg="mask.jpg"
+fname_maskImgBlurred="blurred_mask.jpg"
+scaleFactor=1.0 
+fname_bgimg="bgtmp.png" 
+fname_fgimg="fgtmp.png" 
+fname_resultimg= "result_image.jpg"
+fgImgpath=""
+bgImgpath=""
+bg_image_params= ImgParams( fgImgpath)
+fg_image_params= ImgParams(bgImgpath )
+currImg= fg_image_params
+blurfactor_bg:int=0
+transparency_only:bool=False
 
 
-def  adjustImageHSV(image_bgr, saturation_fact=1.0, value_fact=1):
-    imghsv = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2HSV).astype("float32")
-    h, s, v = cv2.split(imghsv)
-    s= adjustAsColorCurve(s,h=saturation_fact )
-    s= np.clip(s, 0,255)
-    v= adjustAsColorCurve(v,h=value_fact )
-    v= np.clip(v, 0,255) 
-    imghsv = cv2.merge([h, s, v])   
-    img_bgr = cv2.cvtColor(imghsv.astype("uint8"), cv2.COLOR_HSV2BGR)    
-    return img_bgr
+def  initializeImageObjects():
+    global fgImgpath, bgImgpath, fg_image_params, bg_image_params, currImg
+    if tempdirpath == "":
+        raise Exception("Fatal! Temp directory not created ?!!  ")
+    bgImgpath = os.path.join(tempdirpath, fname_bgimg)
+    fgImgpath = os.path.join(tempdirpath, fname_fgimg)
+    bg_image_params= ImgParams( bgImgpath)
+    fg_image_params= ImgParams(fgImgpath )
+    currImg= fg_image_params
 
 
-def  adjustAsColorCurve(Xmat2D, h ):    
-    y= np.add( (-1* ( (h*np.square(Xmat2D-128))/(128**2) )),Xmat2D) +h 
-    y=np.clip(y,0,255 )
-    return y
-
-
-def  splineStretch( imgbgr ,  xvals = [0, 64, 128,  192, 255],
-                  yvals = [0, 56,  128, 220, 255]):
-    res = splines.CatmullRom(yvals, xvals)
-    LUT = np.uint8(res.evaluate(range(0,256)))    
-    stretched_bgr = cv2.LUT(imgbgr, LUT)
-    return stretched_bgr
-
-
-def  deNoiseImage(imgrgb):
-    return cv2.fastNlMeansDenoisingColored(imgrgb, None, 4, 4, 7, 15)
-
-
-def  bilateralBlurFilter(imgbgr, i=15, j=80, k=75):
-    bbimg= cv2.bilateralFilter(imgbgr, i, j, k)
-    return bbimg
+def  setupWorkingImages(scaledimg_bgr):
+    global scaledImgpath, resultImgPath
+    scaledImgpath = os.path.join(tempdirpath, "working_image.jpg")
+    cv2.imwrite(scaledImgpath, scaledimg_bgr, params=[cv2.IMWRITE_JPEG_QUALITY, 100])
+    resultImgPath = os.path.join(tempdirpath, fname_resultimg)
+    shutil.copyfile(src=scaledImgpath, dst=fgImgpath)
+    shutil.copyfile(src=scaledImgpath, dst=bgImgpath)
+    shutil.copyfile(src=scaledImgpath, dst=resultImgPath)
 
 
 def  resizeImageToFit(img_bgr, maxwidth=1200, maxheight=800):
     global scaleFactor
-    h, w, _ = img_bgr.shape     
+    h, w = img_bgr.shape[0],img_bgr.shape[1] 
     if (w<=maxwidth) and (h<=maxheight):
-        return img_bgr    
+        return img_bgr
     scalefactor= min( maxwidth/w , maxheight/h) 
-    scaleFactor= scalefactor       
+    scaleFactor= scalefactor
     dim2=( int(w*scalefactor), int(h*scalefactor) )
     return cv2.resize(img_bgr, dim2, cv2.INTER_CUBIC )
 
 
-def  _createSegmentationMask(imgpath, thresh):
-    BG_COLOR = (0, 0, 0)  
-    MASK_COLOR = (255, 255, 255)  
-    mask_image_rgb_solidcolor=None
-    with mp_selfie_segmentation.SelfieSegmentation(
-            model_selection=0) as selfie_segmentation:
-        image_bgr = cv2.imread(imgpath)
-        image_height, image_width, _ = image_bgr.shape
-        image_bil_bgr=bilateralBlurFilter(image_bgr)        
-        results_rgb = selfie_segmentation.process(
-            cv2.cvtColor(image_bil_bgr, cv2.COLOR_BGR2RGB))      
-        condition = np.stack(
-            (results_rgb.segmentation_mask, ) * 3, axis=-1) > thresh  
-        fg_image = np.zeros(image_bgr.shape, dtype=np.uint8)
-        fg_image[:] = MASK_COLOR
-        bg_image = np.zeros(image_bgr.shape, dtype=np.uint8)
-        bg_image[:] = BG_COLOR
-        mask_image_rgb_solidcolor = np.where( condition, fg_image,
-                              bg_image)  
-    return mask_image_rgb_solidcolor
+def  blurBackground( k:int ):
+    if (k%2==0):
+        k+=1
+    blurred_bg_bgr=blurImage(cv2.imread(scaledImgpath),
+                                 k=k) 
+    _ =tweakAndSaveImage( blurred_bg_bgr , bg_image_params)
 
 
-def  createSegmentationMask_Improved(imgpath, thresh ):
-    image_copy_bgr = cv2.imread(imgpath)  
-    height,width,_= image_copy_bgr.shape
-    mask_image_graybgr= _createSegmentationMask(imgpath,thresh)
-    mask_copy_gray=cv2.cvtColor(mask_image_graybgr, cv2.COLOR_BGR2GRAY) 
-    contours, hierarchy = cv2.findContours(mask_copy_gray, cv2.RETR_EXTERNAL, 
-                                      cv2.CHAIN_APPROX_NONE)
-    if len(contours)==0 :        
-        return np.zeros((height,width,3), np.uint8)    
-    x,y,w,h = cv2.boundingRect(contours[-1])
-    dims= mask_image_graybgr.shape    
-    (X,Y,W,H) =  (max(x-20,0),max(y-20, 0),min(w+40,dims[1]),min(h+40, dims[0]))        
-    # https://stackoverflow.com/a/60869657/5132823 
-    img_cropped= image_copy_bgr[Y:Y+H, X:X+W]    
-    croppedimgpath= os.path.join(tempdirpath,"img_cropped.jpg") 
-    cv2.imwrite(croppedimgpath, img_cropped)   
-    croppedimg_mask_graybgr= _createSegmentationMask( croppedimgpath, thresh)
-    mask_image_graybgr[Y:Y+H, X:X+W] = croppedimg_mask_graybgr    
-    if(seg_mode=='BG'):
-        mask_image_graybgr = cv2.bitwise_not(mask_image_graybgr) 
-    cv2.imwrite(os.path.join(tempdirpath,fname_maskImg), mask_image_graybgr)         
-    return mask_image_graybgr    
+def  tweakAndSaveImage( sourceimg_bgr , imglayer_param):
+    result_bgr = adjustImageHSV(image_bgr=sourceimg_bgr,
+                                          saturation_fact=imglayer_param.saturation,
+                                          value_fact=imglayer_param.brightness)
+    if currImg.denoise_it:
+        result_bgr = deNoiseImage(result_bgr )
+    cv2.imwrite( filename=imglayer_param.imgpath, img=result_bgr ,params=[cv2.IMWRITE_JPEG_QUALITY, 100] )
+    return result_bgr
 
 
-def  createMaskedBrightness(sourceimg_bgr, maskimgimg_graybgr , originalImage=False):
-    mask_graybgr = cv2.resize(maskimgimg_graybgr, sourceimg_bgr.shape[1::-1]) 
-    bright_image_bgr= None   
-    bright_image_bgr = adjustImageHSV(sourceimg_bgr, saturation_fact=saturation, value_fact=brightness)
-    if (denoise_it):        
-        bright_image_bgr = deNoiseImage(bright_image_bgr )     
-    blur_edge_tmp= blur_edge
-    if (originalImage) : 
-        blur_edge_tmp = int(blur_edge/scaleFactor)
+def  blurAndSaveMask(imglayer_param,mask_graybgr, originalImage=False ):
+    blur_edge_tmp= imglayer_param.blur_edge
+    if (originalImage) :
+        blur_edge_tmp = int(imglayer_param.blur_edge/scaleFactor)
     blurred_mask_graybgr = cv2.blur(mask_graybgr, (blur_edge_tmp, blur_edge_tmp),
                             anchor=(-1,-1),borderType= cv2.BORDER_DEFAULT) 
-    cv2.imwrite(os.path.join(tempdirpath, fname_maskImgBlurred), blurred_mask_graybgr)
-    bright_masked_bgr=None
-    max_image_bgr = None
-    if (brightness>0): 
-        msk_bgr= blurred_mask_graybgr/255
-        bright_masked_bgr= np.uint8(bright_image_bgr * msk_bgr)
-        bright_masked_bgr= np.clip(bright_masked_bgr, 0, 255)
-        max_image_bgr = cv2.max(sourceimg_bgr, bright_masked_bgr) 
-    else: 
-        blurred_mask_graybgr=cv2.bitwise_not(blurred_mask_graybgr) 
-        bright_masked_bgr = cv2.max(bright_image_bgr, blurred_mask_graybgr) 
-        max_image_bgr = cv2.min(sourceimg_bgr, bright_masked_bgr) 
-    addWted_bgr = cv2.addWeighted(sourceimg_bgr,
-                              blendweight_img1,
-                              max_image_bgr, (1.0 - blendweight_img1),
-                              gamma=0)
-    if postprocess_it: 
-        addWted_bgr=splineStretch(addWted_bgr)   
+    cv2.imwrite(os.path.join(tempdirpath, fname_maskImgBlurred), blurred_mask_graybgr, params=[cv2.IMWRITE_JPEG_QUALITY, 100])
+    return blurred_mask_graybgr
+
+
+def  createMaskedBrightness(sourceimg_bgr, maskimgimg_graybgr ,
+                           originalImage=False, isTweakNeeded=True):
+    bright_image_bgr=  sourceimg_bgr.copy()
+    if (isTweakNeeded and not originalImage) :
+        bright_image_bgr =tweakAndSaveImage( bright_image_bgr , currImg)
+    if (originalImage) :
+        _ =tweakAndSaveImage( bright_image_bgr , fg_image_params)
+        _ =tweakAndSaveImage( bright_image_bgr , bg_image_params)
+    bright_image_bgr=None
+    if ( blurfactor_bg>1) : 
+        blurBackground(k=blurfactor_bg)
+    mask_graybgr = cv2.resize(maskimgimg_graybgr, sourceimg_bgr.shape[1::-1])
+    blurred_mask_graybgr = blurAndSaveMask( currImg, mask_graybgr, originalImage )
+    stacked_img_bgr = stackNMask_HSV_u8(
+        img_bgr=sourceimg_bgr,
+        fg_image_bgr=cv2.imread(fg_image_params.imgpath),
+        bg_image_bgr=cv2.imread(bg_image_params.imgpath),
+        blurred_mask_gray_bgr=blurred_mask_graybgr)
+    addWted_bgr = blendImages(sourceimg_bgr,
+                              stacked_img_bgr,
+                              ImgParams.blendweight_img1)
+    if ImgParams.postprocess_it:
+        addWted_bgr=splineStretch(addWted_bgr)
+    cv2.imwrite(filename=resultImgPath, img= addWted_bgr, params=[cv2.IMWRITE_JPEG_QUALITY, 95])
     return addWted_bgr
 
 
-def  transferAlteredExif(sourceimgpath:str , outputimgpath:str  ):
-    try:
-        exif_dict = piexif.load(sourceimgpath) 
-        if len(exif_dict['0th'])==0 :
-            return    
-        new_comment= u"PhotoGlimmer"
-        if exif_dict['Exif'].get(37510) is not None:
-            old_comment= str(exif_dict['Exif'][37510] , "utf-8")
-            print(f"old comment was {old_comment}") 
-            new_comment= old_comment + u", PhotoGlimmer"                        
-        else:
-            print("no userComment entry")
-        print(f"new_comment will be {new_comment}")                
-        newcomment= piexif.helper.UserComment.dump(new_comment)    
-        exif_dict["Exif"][piexif.ExifIFD.UserComment] = newcomment
-        exif_bytes = piexif.dump(exif_dict)    
-        piexif.insert(exif_bytes, outputimgpath)
-    except Exception as e:
-        print(f"transferAlteredExif: {e}")    
-
-
-def  processImageFinal(isOriginalImage=False , isSegmentationNeeded=True  ):
+def  processImageFinal(isOriginalImage=False , isSegmentationNeeded=True , 
+                      isTweakingNeeded=True
+                      ):
     image_bgr= None
     maskimg_graybgr= cv2.imread(os.path.join(tempdirpath,fname_maskImg))
     if isOriginalImage: 
         image_bgr = cv2.imread(originalImgPath)
+        setupWorkingImages(image_bgr)
     else: 
-        image_bgr = cv2.imread(scaledImgpath)
+        image_bgr =  cv2.imread(scaledImgpath)        
         if (isSegmentationNeeded):
-            maskimg_graybgr= createSegmentationMask_Improved(scaledImgpath, seg_threshold) 
-    result_bgr = createMaskedBrightness(sourceimg_bgr=image_bgr,
-                                    maskimgimg_graybgr=maskimg_graybgr , originalImage= isOriginalImage)
+            maskimg_graybgr= createSegmentationMask_Improved(scaledImgpath,
+                                                             ImgParams.seg_threshold,
+                                                             tempdirpath,
+                                                             fname_maskImg
+                                                             )
+    result_bgr=None  
+    global transparency_only
+    if (isOriginalImage and transparency_only):
+        result_bgra= saveTransparentImage( image_bgr, maskimg_graybgr)
+        transparency_only=False
+        return result_bgra
+    else: 
+        result_bgr = createMaskedBrightness(sourceimg_bgr=image_bgr,
+                                    maskimgimg_graybgr=maskimg_graybgr,
+                                    originalImage= isOriginalImage)
     return result_bgr
+
+
+def  setCurrValues(seg_threshold, blendweight_img1, blur_edge, postprocess_it,
+                  brightness, saturation, denoise_it):
+    currImg.setValues(seg_threshold, blendweight_img1, blur_edge,
+                      postprocess_it, brightness, saturation, denoise_it)
+
+
+def  switchImgLayer( new_seg_mode ): 
+    global currImg
+    if new_seg_mode not in ["FORE", "BG"]:
+        print(f"invalid seg_mode {new_seg_mode}")
+        return
+    currImg = bg_image_params if (new_seg_mode=="BG")            else fg_image_params
+
+
+def  backupScaledImages():
+    shutil.copyfile(fgImgpath, f"{fgImgpath}_bk")
+    shutil.copyfile(bgImgpath, f"{bgImgpath}_bk")
+    shutil.copyfile(scaledImgpath, f"{scaledImgpath}_bk")
+    shutil.copyfile(resultImgPath, f"{resultImgPath}_bk")
+
+
+def  RestoreScaledImages():  
+    if (not os.path.exists(f"{fgImgpath}_bk"))  :
+        return False
+    shutil.move( f"{fgImgpath}_bk", fgImgpath) 
+    shutil.move(f"{bgImgpath}_bk" , bgImgpath )
+    shutil.move(f"{scaledImgpath}_bk", scaledImgpath)
+    shutil.move(f"{resultImgPath}_bk", resultImgPath)
+    return True
+
+
+def  saveTransparentImage(imgbgr, mask_graybgr , outfpath:str=None):
+    if outfpath:
+        assert outfpath.endswith(".png") , "saveTransparentImage can only save .png images"
+    if(mask_graybgr.shape[0] != imgbgr.shape[0] or mask_graybgr.shape[1] != imgbgr.shape[1] ):
+        mask_graybgr= cv2.resize(mask_graybgr, imgbgr.shape[1::-1])
+    im_gbra= createTrasnparentImage(imgbgr=imgbgr,  
+                                  blurredmaskbgr= mask_graybgr)  
+    if outfpath:
+        cv2.imwrite(outfpath, im_gbra, params=[cv2.IMWRITE_JPEG_QUALITY, 100])  
+    return im_gbra
+
+
+def  resetBackend():
+    switchImgLayer("FORE")
+    initializeImageObjects()

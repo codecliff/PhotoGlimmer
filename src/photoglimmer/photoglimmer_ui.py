@@ -2,28 +2,30 @@
 # ###############################################################################
 # Copyright : Rahul Singh
 # URL       : https://github.com/codecliff/PhotoGlimmer
-# License   : LGPL 
+# License   : LGPL
 # email     : codecliff@users.noreply.github.com
-# Disclaimer: No warranties, stated or implied.   
-#  Description:  
-# Entry point for the applicaiton. 
-# Handles all UI related activities and some ui stylization, even though 
-# the UI is almost entirely defined in a .ui file created using QT Designer 
+# Disclaimer: No warranties, stated or implied.
+#  Description:
+# Entry point for the applicaiton.
+# Handles all UI related activities and some ui stylization, even though
+# the UI is almost entirely defined in a .ui file created using QT Designer
 # ###############################################################################
 #imports
 import os, sys, shutil, time, tempfile
-# QT 
-from PySide2 import QtWidgets,  QtCore 
+# QT
+from PySide2 import QtWidgets,  QtCore
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtGui import QPixmap, QIcon, QMovie, QKeySequence
-from PySide2.QtCore import QThreadPool, QFile  
-from PySide2.QtWidgets import QStyle, QMessageBox, QAction, QGridLayout
-# Only if using qdarktheme style 
+from PySide2.QtCore import QThreadPool, QFile
+from PySide2.QtWidgets import QStyle, QMessageBox, QAction, QGridLayout,QLabel
+# Only if using qdarktheme style
 import  qdarktheme
 # This application
 import photoglimmer.photoglimmer_backend as photoglimmer_backend
 from photoglimmer.threadwork import *
 import photoglimmer.customfiledialog as customfiledialog
+import photoglimmer.uihelper_transparency 
+import cv2
 #/**   START Patch FOR cv2+qt plugin **/
 # https://forum.qt.io/post/654289
 ci_build_and_not_headless = False
@@ -33,39 +35,40 @@ try:
 except Exception as err:
     print(f"Error loading patch for cv2+qt : {err}")
 if sys.platform.startswith("linux") and ci_and_not_headless:
-    os.environ.pop("QT_QPA_PLATFORM_PLUGIN_PATH")    
+    os.environ.pop("QT_QPA_PLATFORM_PLUGIN_PATH")
 if sys.platform.startswith("linux") and ci_and_not_headless:
     os.environ.pop("QT_QPA_FONTDIR")
 QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_ShareOpenGLContexts)
 appname = "PhotoGlimmer"
 iconpath = "resources/appicon.png"
-progbarpath = "resources/spinner.gif"
-tempdir = None  
+progbarpath = "resources/spinner3_8.gif"
+tempdir = None
 tempImage_original = "tmp_original.jpg"
 preferSystemFileDlg= False 
 
 
 class  Ui(QtWidgets.QMainWindow):
-    tempimage = 'tmp.jpg' 
+    tempimage = photoglimmer_backend.fname_resultimg
 
 
     def  __init__(self):
         super(Ui, self).__init__()
         self.loader = QUiLoader()
-        uifile= QFile(self.getAbsolutePathForFile("./photoglimmer_qt.ui"))        
-        self.window= self.loader.load(uifile)         
+        uifile= QFile(self.getAbsolutePathForFile("./photoglimmer_qt.ui"))
+        self.window= self.loader.load(uifile)
         self.setCentralWidget(self.window) 
         uifile.close()
-        self.setAcceptDrops(True)        
+        self.setAcceptDrops(True)
         self.setUpMyUI()
         self.displaySliderValues()
         self.is_state_dirty = False
-        self.is_segmentation_needed= True 
+        self.is_segmentation_needed= True
+        self.is_tweaking_needed= True
         self.createTempDir()
+        photoglimmer_backend.initializeImageObjects() 
         self.thread_pool = QThreadPool()
-        self.getScreenSize()
         self.setWindowTitle(f"{appname}: Illuminate Me! ")
-        self.showMaximized()  
+        self.showMaximized()
         self.disableSliders()
         self.setStatus(f"Open an image to edit.")
         if len(sys.argv) > 1:
@@ -82,9 +85,9 @@ class  Ui(QtWidgets.QMainWindow):
         self.buttonBrowse.clicked.connect(self.goBrowse)
         self.buttonReset = self.findChild(QtWidgets.QPushButton,
                                             "buttonReset")
-        self.buttonReset.clicked.connect(lambda : 
-            self.openNewImage(photoglimmer_backend.originalImgPath)) 
-        self.buttonSave = self.findChild(QtWidgets.QPushButton, "button2Save")
+        self.buttonReset.clicked.connect(self.goReset)
+        self.buttonSave = self.findChild(QtWidgets.QPushButton, 
+                                         "button2Save")
         self.buttonSave.clicked.connect(self.goSave)
         self.labelImg = self.findChild(QtWidgets.QLabel, 'label_mainimage')
         self.labelMask = self.findChild(QtWidgets.QLabel, 'label_maskimage')
@@ -100,13 +103,17 @@ class  Ui(QtWidgets.QMainWindow):
                                             'slider_blendwt1')
         self.slideBrightness = self.findChild(QtWidgets.QAbstractSlider,
                                               'slider_bright')
-        self.slideBlur = self.findChild(QtWidgets.QAbstractSlider,
-                                        'slider_blur')
+        self.slideBlurEdge = self.findChild(QtWidgets.QAbstractSlider,
+                                        'slider_bluredge')
+        self.slideBgBlur = self.findChild(QtWidgets.QAbstractSlider,
+                                        'slider_bgblur')
+        self.slideBgBlur.setEnabled(False) 
         self.lcdThresh = self.findChild(QtWidgets.QLCDNumber, 'lcd_thresh')
         self.lcdSaturat = self.findChild(QtWidgets.QLCDNumber, 'lcd_satur')
         self.lcdBrightness = self.findChild(QtWidgets.QLCDNumber, 'lcd_bright')
         self.lcdBlur = self.findChild(QtWidgets.QLCDNumber, 'lcd_blur')
         self.lcdBlendwt1 = self.findChild(QtWidgets.QLCDNumber, 'lcd_blendwt1')
+        self.lcdBgBlur = self.findChild(QtWidgets.QLCDNumber, 'lcd_bgblur')
         self.checkBoxPP.setChecked(False)
         self.controlBox = self.findChild(QtWidgets.QFrame, 'frameSliders')
         icon_save = self.style().standardIcon(QStyle.SP_DriveFDIcon)
@@ -118,27 +125,27 @@ class  Ui(QtWidgets.QMainWindow):
         self.appicon = QIcon(self.getAbsolutePathForFile(iconpath))
         self.setWindowIcon(self.appicon)
         self.labelImg.installEventFilter(self)
-        self.sliderSegMode.sliderReleased.connect(self.handleSliderEvent)
-        self.slideSaturat.sliderReleased.connect(self.handleSliderEvent)
-        self.slideBelndwt1.sliderReleased.connect(self.handleSliderEvent)
-        self.slideBlur.sliderReleased.connect(self.handleSliderEvent)
-        self.slideBrightness.sliderReleased.connect(self.handleSliderEvent)
-        self.slideThresh.sliderReleased.connect(self.handleSliderEvent)
-        self.checkBoxPP.stateChanged.connect(self.processImage)
-        self.checkBoxDenoise.stateChanged.connect(self.processImage)
-        self.sliderSegMode.valueChanged.connect(self.raiseSegmentationFlag)
-        self.slideThresh.valueChanged.connect(self.raiseSegmentationFlag)
-        self.slideBlur.valueChanged.connect(self.raiseSegmentationFlag)
+        self.sliderSegMode.sliderReleased.connect(self.handleSegModeSliderRelease)
+        self.slideSaturat.sliderReleased.connect(self.handleTweakSlidersRelease)
+        self.slideBrightness.sliderReleased.connect(self.handleTweakSlidersRelease)
+        self.slideBgBlur.sliderReleased.connect(self.handleTweakSlidersRelease)
+        self.slideThresh.sliderReleased.connect(self.handleSegmentationSlidersRelease)
+        self.slideBlurEdge.sliderReleased.connect(self.handleSegmentationSlidersRelease)
+        self.slideBelndwt1.sliderReleased.connect(self.handleSliderRelesedEvent)
+        for slider in self.findChildren(QtWidgets.QSlider):
+            slider.valueChanged.connect(self.updateLCDValues)
+        self.checkBoxPP.stateChanged.connect(self.handleCheckBoxeEvents)
+        self.checkBoxDenoise.stateChanged.connect(self.handleCheckBoxeEvents)
         self.saveUiDefaults()
         self.setUpMenubar()
 
 
     def  getImagesDirectory(self):
         from  PySide2.QtCore import QStandardPaths
-        pth=QStandardPaths.PicturesLocation 
+        pth=QStandardPaths.PicturesLocation
         sysimgfolder= str(QStandardPaths.writableLocation(pth) )
-        if os.path.exists(sysimgfolder): 
-            return sysimgfolder 
+        if os.path.exists(sysimgfolder):
+            return sysimgfolder
         return None
 
 
@@ -158,7 +165,8 @@ class  Ui(QtWidgets.QMainWindow):
         self.menuSave = self.findChild(QAction, "action_save")
         self.menuQuit = self.findChild(QAction, "action_quit")
         self.menuAbout = self.findChild(QAction, "action_about")
-        self.menuParFolder = self.findChild(QAction, "action_ParentFolder")                 
+        self.menuParFolder = self.findChild(QAction, "action_ParentFolder")
+        self.menuTranspExp= self.findChild(QAction, "actionExportTransparency")
         self.menuOpen.triggered.connect(self.goBrowse)
         self.menuOpen.setShortcut(QKeySequence("Ctrl+O"))
         self.menuSave.triggered.connect(self.goSave)
@@ -167,31 +175,32 @@ class  Ui(QtWidgets.QMainWindow):
         self.menuQuit.setShortcut(QKeySequence("Ctrl+Q"))
         self.menuParFolder.triggered.connect(self.openSystemExplorer)
         self.menuAbout.triggered.connect(self.openHelpURL) 
+        self.menuTranspExp.triggered.connect(self.exportTransparency)
 
 
-    def  dragEnterEvent(self, event):          
+    def  dragEnterEvent(self, event):
         isImage= self.isImageURL(event.mimeData().urls()[0].toLocalFile())
         if(isImage):
-            event.acceptProposedAction()      
+            event.acceptProposedAction()
         else:
-            event.ignore()      
+            event.ignore()
 
 
-    def  dropEvent(self, event):       
-       isImage= self.isImageURL(event.mimeData().urls()[0].toLocalFile())
-       if(isImage):           
-           fname= event.mimeData().urls()[0].toLocalFile()
-           self.openNewImage(fname)
-       else:
-           event.ignore()     
+    def  dropEvent(self, event):
+        isImage= self.isImageURL(event.mimeData().urls()[0].toLocalFile())
+        if(isImage):
+            fname= event.mimeData().urls()[0].toLocalFile()
+            self.openNewImage(fname)
+        else:
+            event.ignore()
 
 
     def  isImageURL(self,  url:str ):
-        from  mimetypes import MimeTypes        
+        from  mimetypes import MimeTypes
         t,enc= MimeTypes().guess_type(url, strict=True) 
         if t is None:
             return False
-        if t.startswith("image/"):            
+        if t.startswith("image/"):
             return True
         return False
 
@@ -200,41 +209,62 @@ class  Ui(QtWidgets.QMainWindow):
         self.statusBar.showMessage(msg)
 
 
-    def  showMessage(self, title=f"{appname}! ", text="Message About" ,
+    def  showMessage(self, title="", text="Message About" ,
                     message="Some message shown"):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Icon.Information)
         msg.setText(text)
         msg.setInformativeText(message)
-        msg.setWindowTitle(title)    
+        title=f"{appname}: {title} "
+        msg.setWindowTitle(title)
         msg.exec_()
 
 
     def  showConfirmationBox(self, titl="Confirm", questn="really?"):
-        reply = QMessageBox.question(self, 
-                                     titl, 
+        reply = QMessageBox.question(self,
+                                     titl,
                                      questn,
-                                      QMessageBox.Yes | QMessageBox.No, 
-                                      QMessageBox.No)        
+                                      QMessageBox.Yes | QMessageBox.No,
+                                      QMessageBox.No)
         result= False
-        result= True if reply == QMessageBox.Yes else False                
-        return result    
+        result= True if reply == QMessageBox.Yes else False
+        return result
 
 
     def  saveUiDefaults(self):
         slds= self.findChildren(QtWidgets.QSlider)
+        chks= self.findChildren(QtWidgets.QCheckBox)
         self.slider_defaults=[]
-        for s in slds:            
+        self.checkbx_defaults=[]
+        for s in slds:
             self.slider_defaults.append(s.value())
+        for c in chks:
+            self.checkbx_defaults.append(c.checkState())    
 
 
     def  resetUiToDefaults(self):
-        sliders= self.findChildren(QtWidgets.QSlider)        
+        sliders= self.findChildren(QtWidgets.QSlider)
+        checkbxs= self.findChildren(QtWidgets.QCheckBox)
         for x in list(zip(sliders, self.slider_defaults)):
-            x[0].setValue(x[1])            
+            x[0].setValue(x[1])
+        for c in list(zip(checkbxs, self.checkbx_defaults)):
+            c[0].setCheckState(c[1])
+
+
+    def  saveSliderValues(self):
+        slds= self.findChildren(QtWidgets.QSlider)
+        sldvals=[]
+        for s in slds:
+            sldvals.append(s.value())
+        return sldvals
+
+
+    def  setSliderValues(self, sldvals):
+        sliders= self.findChildren(QtWidgets.QSlider)
+        for x in list(zip(sliders, sldvals)):
+            if (x[0] is not self.sliderSegMode):
+                x[0].setValue(x[1])
         self.displaySliderValues()
-        self.checkBoxPP.checked=False
-        self.checkBoxDenoise.checked=True
 
 
     def  eventFilter(self, obj, event):
@@ -249,8 +279,12 @@ class  Ui(QtWidgets.QMainWindow):
         return False
 
 
-    def  raiseSegmentationFlag(self, value):
-        self.is_segmentation_needed= True  
+    def  raiseSegmentationFlag(self, value:bool):
+        self.is_segmentation_needed= value
+
+
+    def  raiseTweakFlag(self, value:bool):
+        self.is_tweaking_needed= value
 
 
     def  disableSliders(self):
@@ -260,29 +294,69 @@ class  Ui(QtWidgets.QMainWindow):
         self.buttonSave.setEnabled(False)
         self.buttonReset.setEnabled(False)
         self.menuSave.setEnabled(False)
-        self.buttonSave.setStyleSheet("border-color:gray; color:gray") 
+        self.buttonSave.setStyleSheet("border-color:gray; color:gray")
 
 
     def  enableSliders(self):
-        self.isUIEnabled=True 
+        self.isUIEnabled=True
         self.controlBox.setEnabled(True)
         self.sliderSegMode.setEnabled(True)
         self.buttonSave.setEnabled(True)
         self.buttonReset.setEnabled(True)
         self.menuSave.setEnabled(True)
-        self.buttonSave.setStyleSheet("border-color:white; color:white") 
+        self.buttonSave.setStyleSheet("border-color:white; color:white")
+
+
+    def  updateLCDValues(self,val):
+        sld = self.sender()
+        if sld is self.slideBrightness :
+            self.lcdBrightness.display(val)
+        elif sld is self.slideSaturat :
+            self.lcdSaturat.display(val)
+        elif sld is self.slideThresh :
+            self.lcdThresh.display(val)
+        elif sld is self.slideBelndwt1 :
+            self.lcdBlendwt1.display(val)
+        elif sld is self.slideBlurEdge :
+            self.lcdBlur.display(val)
+        elif sld is self.slideBgBlur :
+            self.lcdBgBlur.display(val)    
 
 
     def  displaySliderValues(self):
         self.lcdThresh.display(self.slideThresh.value())
         self.lcdBlendwt1.display(self.slideBelndwt1.value())
-        self.lcdBlur.display(self.slideBlur.value())
+        self.lcdBlur.display(self.slideBlurEdge.value())
         self.lcdBrightness.display(self.slideBrightness.value())
         self.lcdSaturat.display(self.slideSaturat.value())
+        self.lcdBgBlur.display(self.slideBgBlur.value())
 
 
-    def  handleSliderEvent(self):
-        self.displaySliderValues()
+    def  handleSegModeSliderRelease(self) :
+        new_seg_mode = ('BG', 'FORE')[int(
+            self.sliderSegMode.value())]
+        photoglimmer_backend.switchImgLayer(new_seg_mode)
+        self.restoreUIValuesToLayer( photoglimmer_backend.currImg)
+        self.slideBgBlur.setEnabled(new_seg_mode == 'BG')
+
+
+    def  handleSegmentationSlidersRelease(self):
+        self.raiseSegmentationFlag(True)
+        self.handleSliderRelesedEvent()
+
+
+    def  handleTweakSlidersRelease(self):
+        self.raiseTweakFlag(True)
+        self.handleSliderRelesedEvent()
+
+
+    def  handleCheckBoxeEvents(self):
+        self.setBackendVariables()
+        self.processImage()
+
+
+    def  handleSliderRelesedEvent(self):
+        self.setBackendVariables()
         self.processImage()
 
 
@@ -310,13 +384,23 @@ class  Ui(QtWidgets.QMainWindow):
 
     def  startBusySpinner(self):
         self.progressmovie = QMovie(self.getAbsolutePathForFile(progbarpath))
-        self.labelImg.setMovie(self.progressmovie) 
+        self.spinnerLabel=QLabel(self.labelImg)
+        self.spinnerLabel.setMovie(self.progressmovie)
+        self.spinnerLabel.setFixedSize(200,  200)
+        mid= ( (self.labelImg.width()-self.spinnerLabel.width())//2,
+            (self.labelImg.height()-self.spinnerLabel.height())//2 )
+        self.spinnerLabel.move(mid[0], mid[1])
+        self.labelImg.setEnabled(False)
         self.progressmovie.start()
+        self.spinnerLabel.show()
 
 
     def  stopBusySpinner(self):
         if (self.progressmovie is not None):
             self.progressmovie.stop()
+        if (self.spinnerLabel is not None):
+            self.spinnerLabel.hide()
+        self.labelImg.setEnabled(True)
 
 
     def  goBrowse(self):
@@ -324,34 +408,36 @@ class  Ui(QtWidgets.QMainWindow):
         homedir = self.getImagesDirectory()
         if (homedir is None):
             homedir = expanduser("~")
-        if (photoglimmer_backend.originalImgPath and 
-            photoglimmer_backend.originalImgPath.strip() and  
+        if (photoglimmer_backend.originalImgPath and
+            photoglimmer_backend.originalImgPath.strip() and
             os.path.exists(photoglimmer_backend.originalImgPath)):
-                homedir= os. path. dirname(photoglimmer_backend.originalImgPath)
+            homedir= os. path. dirname(photoglimmer_backend.originalImgPath)
         fname=[""]
         if preferSystemFileDlg :
             fname = QtWidgets.QFileDialog.getOpenFileName(
             self,
             caption=f"{appname}: open image file",
-            dir= homedir, 
+            dir= homedir,
             filter=("Image Files (*.png *.jpg *.bmp *.webp *.JPG *.jpeg *.JPEG )"))
-        else:         
+        else:
             fname = customfiledialog.QFileDialogPreview.getOpenFileName(parent=self,dir= homedir )
         if (fname[0] == ''):
             return
         if not self.isImageURL(  fname[0] ):
             self.showMessage(title="Error!", text="Invalid file",message=f"Not an image?: {fname[0]}  ")
             return
-        try: 
+        try:
             self.openNewImage(fname[0])
-        except Exception as e: 
-            self.showMessage("Error", "Not an image?", type(e).__name__)    
+        except Exception as e:
+            self.showMessage("Error", "Not an image?", type(e).__name__)
 
 
     def  openNewImage(self, imgpath):
+        photoglimmer_backend.initializeImageObjects()
         photoglimmer_backend.originalImgPath = imgpath
-        self.resetUiToDefaults()
-        self.setupBrowsedImage()
+        self.setupBrowsedImage() 
+        self.resetUiToDefaults() 
+        self.setBackendVariables() 
 
 
     def  setupBrowsedImage(self):
@@ -359,10 +445,17 @@ class  Ui(QtWidgets.QMainWindow):
         self.createWorkingImage()
         self.is_state_dirty = False
         self.is_segmentation_needed=True
-        self.labelMask.clear()
-        self.showImage(photoglimmer_backend.scaledImgpath)
+        self.is_tweaking_needed=True
+        self.labelMask.clear()        
+        self.showImage(photoglimmer_backend.resultImgPath)
         self.enableSliders()
         self.setStatus(f"Edit using sliders. Press Save when done.")
+
+
+    def  goReset(self):
+        photoglimmer_backend.resetBackend()
+        self.openNewImage(photoglimmer_backend.originalImgPath)
+        self.restoreUIValuesToLayer( photoglimmer_backend.currImg)
 
 
     def  goSave(self):
@@ -373,7 +466,8 @@ class  Ui(QtWidgets.QMainWindow):
             return
         self.disableSliders()
         self.setStatus("Saving image..this takes longer than normal edit")
-        self.startBusySpinner()        
+        self.startBusySpinner()
+        photoglimmer_backend.backupScaledImages()
         worker = Worker(self._goSave_bgstuff)
         worker.signals.finished.connect(self._showSaveDialog)
         self.thread_pool.start(worker)
@@ -381,54 +475,58 @@ class  Ui(QtWidgets.QMainWindow):
 
     def  _goSave_bgstuff(self, progress_callback=None):
         result_image = photoglimmer_backend.processImageFinal(
-            isOriginalImage=True, isSegmentationNeeded= False)
+            isOriginalImage=True, isSegmentationNeeded= False,
+            isTweakingNeeded=True )
         self.tempimage = self.createTempFile(fname=tempImage_original,
-                                             img=result_image)
+                                             img=result_image, jpegqual=97)
         return
 
 
     def  _showSaveDialog(self):
-        fname=None        
-        newfile= self.appendToFilePath( photoglimmer_backend.originalImgPath)       
+        fname=None
+        newfile= self.appendToFilePath( photoglimmer_backend.originalImgPath)
         fileName, _ = QtWidgets.QFileDialog.getSaveFileName(
             self,
             caption=f"{appname}: Save File",
             dir=newfile,  
-            filter=("Image Files (*.jpg)")) 
+            filter=("Image Files (*.jpg, *.png)")) 
         if fileName:
-            ext= "jpg"                        
+            _, ext = os.path.splitext(self.tempimage)
+            print( f"going to save {self.tempimage} , extension {ext}")
             fname = f"{fileName}"
-            if not fname.endswith(ext) :             
+            if not fname.endswith(ext) :
                 fname = f"{fileName}.{ext}"
                 if(os.path.exists(fname)): 
-                    fname=f"{fileName}_{appname}_{time.time()}.{ext}"                
+                    fname=f"{fileName}_{appname}_{time.time()}.{ext}"
             with open(fname, 'w') as f:
                 try:
-                    shutil.copy(self.tempimage, fname)                    
+                    shutil.copy(self.tempimage, fname)
                 except Exception as e:
                     print(f"An error occurred: {e}")
-                    self.showMessage(  title= "Error!", 
-                                     text="Error saving file", 
+                    self.showMessage(  title= "Error!",
+                                     text="Error saving file",
                                      message=e)
         else:
             pass   
         self.stopBusySpinner()
         if(fname is not None):
             photoglimmer_backend.transferAlteredExif( photoglimmer_backend.originalImgPath,
-                                                            fname )                    
+                                                            fname )
             self.showMessage( text="File Saved",  message=f"Saved {fname}" )
         self.enableSliders()
-        self.processImage()  
+        photoglimmer_backend.RestoreScaledImages() 
+        self.tempimage=photoglimmer_backend.resultImgPath 
+        self.showImage(self.tempimage)                 
         return
 
 
     def  closeEvent(self, event):
-        res= self.showConfirmationBox(titl="Quit?", 
+        res= self.showConfirmationBox(titl="Quit?",
                                       questn="Are you sure you want to quit?")
         if not res:
             event.ignore()
         else:
-            event.accept() 
+            event.accept()
 
 
     def  appendToFilePath(self,fpath):
@@ -438,9 +536,9 @@ class  Ui(QtWidgets.QMainWindow):
     basedir=os.path.dirname(__file__)
 
 
-    def  getAbsolutePathForFile(self, fname:str):        
+    def  getAbsolutePathForFile(self, fname:str):
         f= os.path.abspath(__file__)
-        d= os.path.dirname(f)      
+        d= os.path.dirname(f)
         abspth=os.path.join(self.basedir, fname)
         return abspth
 
@@ -454,24 +552,24 @@ class  Ui(QtWidgets.QMainWindow):
 
     def  openHelpURL(self):
         helpurl= "https://github.com/codecliff/PhotoGlimmer"
-        self.openBrowser(helpurl)        
+        self.openBrowser(helpurl)
 
 
     def  openBrowser(self, dirpath):
         import subprocess, platform
         osname= platform.system()
         if (osname in ['Windows', 'windows', 'win32']):
-                os.startfile(dirpath)
-                return
+            os.startfile(dirpath)
+            return
         opener = "open" if osname in ["darwin", "Darwin"] else "xdg-open"
         subprocess.call([opener, dirpath])
 
 
     def  getScreenSize( self ):
-        from PySide2.QtWidgets import QApplication, QDesktopWidget        
+        from PySide2.QtWidgets import QApplication, QDesktopWidget
         desktop = QDesktopWidget()
         screen_width = desktop.screenGeometry().width()
-        screen_height = desktop.screenGeometry().height()        
+        screen_height = desktop.screenGeometry().height()
         print(f"Screen Width: {screen_width}")
         print(f"Screen Height: {screen_height}")
 
@@ -486,10 +584,12 @@ class  Ui(QtWidgets.QMainWindow):
         scaledimg_bgr = img_bgr
         if (img_bgr.shape[0] > w or img_bgr.shape[1] > h):
             scaledimg_bgr = photoglimmer_backend.resizeImageToFit(img_bgr, w, h)
-        photoglimmer_backend.scaledImgpath = os.path.join(
-            photoglimmer_backend.tempdirpath, "working_image.jpg")
-        photoglimmer_backend.cv2.imwrite(
-            photoglimmer_backend.scaledImgpath, scaledimg_bgr)
+        photoglimmer_backend.setupWorkingImages(scaledimg_bgr)
+
+
+    def  setTempDir(self, tempd):
+        global tempdir
+        tempdir = tempd
 
 
     def  createTempDir(self):
@@ -499,9 +599,12 @@ class  Ui(QtWidgets.QMainWindow):
         photoglimmer_backend.tempdirpath = tempd.name
 
 
-    def  createTempFile(self, fname, img):
+    def  createTempFile(self, fname, img,jpegqual=100):
         f = os.path.join(tempdir.name, fname)
-        photoglimmer_backend.cv2.imwrite(img=img, filename=f)        
+        if (img.shape[-1]==4):
+            f+=".png"
+        photoglimmer_backend.cv2.imwrite(img=img, filename=f, 
+                                         params=[cv2.IMWRITE_JPEG_QUALITY, jpegqual] )
         return f
 
 
@@ -510,33 +613,73 @@ class  Ui(QtWidgets.QMainWindow):
             for fl in os.listdir(tempdir.name):
                 os.remove(f"{tempdir.name}/{fl}")
         except Exception as err:
-            print(err)    
+            print(err)
 
 
     def  setBackendVariables(self):
-        photoglimmer_backend.seg_threshold = float(
+        seg_threshold = float(
             self.slideThresh.value()) / 100
-        photoglimmer_backend.blendweight_img1 = float(
+        blendweight_img1 = float(
             self.slideBelndwt1.value()) / 100
-        photoglimmer_backend.brightness = int(self.slideBrightness.value())
-        photoglimmer_backend.saturation = int(self.slideSaturat.value())
-        photoglimmer_backend.blur_edge = int(self.slideBlur.value())
-        photoglimmer_backend.seg_mode = ('BG', 'FORE')[int(
+        brightness = int(self.slideBrightness.value())
+        saturation = int(self.slideSaturat.value())
+        blur_edge = int(self.slideBlurEdge.value())
+        seg_mode = ('BG', 'FORE')[int(
             self.sliderSegMode.value())]
-        photoglimmer_backend.denoise_it= bool(self.checkBoxDenoise.isChecked())
-        photoglimmer_backend.postprocess_it= bool(self.checkBoxPP.isChecked())
+        denoise_it= bool(self.checkBoxDenoise.isChecked())
+        postprocess_it= bool(self.checkBoxPP.isChecked())        
+        photoglimmer_backend.blurfactor_bg= int( self.slideBgBlur.value() )        
+        photoglimmer_backend.setCurrValues(
+            seg_threshold,
+            blendweight_img1,
+            blur_edge ,
+            postprocess_it ,
+            brightness ,
+            saturation ,
+            denoise_it,
+            )
         self.setImageAdjustMode()
 
 
+    def  restoreUIValuesToLayer( self, imgpar ):
+        self.slideThresh.setValue( int(100*imgpar.seg_threshold ))
+        self.slideBelndwt1.setValue( int(100*imgpar.blendweight_img1 ))
+        self.slideBrightness.setValue(imgpar.brightness)
+        self.slideSaturat.setValue(imgpar.saturation)
+        self.slideBlurEdge.setValue(imgpar.blur_edge)
+        self.checkBoxDenoise.setChecked(imgpar.denoise_it)
+        self.checkBoxPP.setChecked(imgpar.postprocess_it)
+        self.displaySliderValues()
+
+
+    def  exportTransparency( self):
+        self.old_status= self.statusBar.currentMessage()
+        self.setStatus("Copying Foreground , Wait! ")
+        worker2 = Worker(self._transparencyToClipboard)
+        worker2.signals.finished.connect(self._displayTransparencyCompleted)
+        self.thread_pool.start(worker2)        
+
+
+    def  _transparencyToClipboard(self, progress_callback=None):
+        helper_transp= photoglimmer.uihelper_transparency.UIHelper(self)       
+        helper_transp.transparency_to_clipboard(  
+                                           originalImgPath= photoglimmer_backend.originalImgPath,
+                                           tempdirpath=photoglimmer_backend.tempdirpath)
+
+
+    def  _displayTransparencyCompleted(self, progress_callback=None):
+        self.showMessage( "Foreground Copied To Clipboard", 
+                            "Paste it to your favourite image Editor")
+        self.setStatus(self.old_status)
+        self.old_status=""
+
+
     def  processImage(self):
-        self.setBackendVariables()
         self.disableSliders()
-        self.startBusySpinner()
         if (photoglimmer_backend.scaledImgpath == None
                 or not os.path.exists(photoglimmer_backend.scaledImgpath)):
             self.showMessage("Error!","Empty", "You haven't Opened any Image! ")
             return
-        self.startBusySpinner()
         worker2 = Worker(self._processImage_bgstuff)
         worker2.signals.finished.connect(self._endImageProcessing)
         self.thread_pool.start(worker2)
@@ -545,30 +688,33 @@ class  Ui(QtWidgets.QMainWindow):
     def  _processImage_bgstuff(self, progress_callback=None):
         result_image = photoglimmer_backend.processImageFinal(
             isOriginalImage=False,
-            isSegmentationNeeded=self.is_segmentation_needed)
-        self.tempimage = self.createTempFile(fname="temp.jpg",
+            isSegmentationNeeded=self.is_segmentation_needed,
+            isTweakingNeeded= self.is_tweaking_needed)
+        self.tempimage = self.createTempFile(fname=photoglimmer_backend.fname_resultimg,
                                              img=result_image)
 
 
     def  _endImageProcessing(self):
-        time.sleep(1)
-        self.stopBusySpinner()
         self.showImage(self.tempimage)
         self.showMask(
             os.path.join(photoglimmer_backend.tempdirpath,
                          photoglimmer_backend.fname_maskImgBlurred))
         self.enableSliders()
         self.is_state_dirty = True
-        self.is_segmentation_needed=False 
+        self.raiseSegmentationFlag(False)
+        self.raiseTweakFlag(False)
 
 
 def  main():
     global app,tempdir
-    app = QtWidgets.QApplication(sys.argv)    
-    qdarktheme.setup_theme("dark")        
-    qdarktheme.setup_theme(custom_colors={"primary":"#ABCDEF" , 
+    if len(sys.argv)>1 and str.strip(sys.argv[1]) in ["-v","--version" ]:
+        print(f"PhotoGlimmer Version 0.3.0")
+        sys.exit(0)
+    app = QtWidgets.QApplication(sys.argv)
+    qdarktheme.setup_theme("dark")
+    qdarktheme.setup_theme(custom_colors={"primary":"#ABCDEF" ,
                                               "foreground>slider.disabledBackground":"#535c66"}) 
-    window = Ui()    
+    window = Ui()
     window.setAppStyleSheets() 
     app.exec_()
     tempdir.cleanup()
