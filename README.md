@@ -12,9 +12,16 @@
 
 
 #### ✨✨ Download Version 0.3 Binaries ✨✨         
-        * Ubuntu .deb installer
-        * Linux Appimage
-        * Windows installer 
+
+- **Linux Appimage:** Download, make executable and run
+    * [Appimage for All Linux flavors](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.3.0_linux/PhotoGlimmer-0.3.0-x86_64.AppImage)
+- **Ubuntu .deb Installer**: Download and install using apt or gdebi
+    * [Python 3.8/Ubuntu 20.04](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.3.0_linux/photoglimmer_0.3.0-1.ubuntu-focal_amd64.deb)
+    * [Python 3.10/Ubuntu 22.04]- to be released
+- **Windows Installer:** Download and install, tested on Windows11 
+    * [Msi Installer](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.3.0/PhotoGlimmer-0.3.0.msi)
+
+  All releases can be found onthe [release page](https://github.com/codecliff/PhotoGlimmer/releases) ( expand the Asset sections ) 
 
 
   
@@ -118,8 +125,8 @@ So, if you are using the .deb or .AppImage version, you need to have only **Pyth
 # Installation and Running: 
 
 > [!NOTE]
-> Binary installation files can be found on the Release Page.
-> [Latest version is v0.1.2 Pre Release](https://github.com/codecliff/PhotoGlimmer/releases/tag/v0.1.2). 
+> Binary installers are at the top of this page (V0.3 Binaries)[https://github.com/codecliff/PhotoGlimmer/edit/0_3/README.md#-download-version-03-binaries-]
+> [All Binary Release Assets](https://github.com/codecliff/PhotoGlimmer/releases/). 
 
 
 ## Method 1. Appimage (Any Linux):
@@ -161,9 +168,9 @@ Follow these steps to install dependencies and run PhotoGlimmer :
 
 
 - **Main Sliders:**
-    + `#0969DA` Brightness and saturation  of selected area can be tweaked with the relevant slider
-    + `#0969DA` **Selection can be grown or shrunk  by using the ``Threshold`` slider**
-    + `#0969DA` **The ``Edge Blur`` slider blends the edited portion smoothly with background
+    +  Brightness and saturation  of selected area can be tweaked with the relevant slider
+    +  **Selection can be grown or shrunk  by using the ``Threshold`` slider**
+    +  **The ``Edge Blur`` slider blends the edited portion smoothly with background
 
     
 ## Process for editing an image: 
