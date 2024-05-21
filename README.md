@@ -196,15 +196,17 @@ Follow these steps to install dependencies and run PhotoGlimmer :
 
 
 ## Acknowledgments:
-- [Mediapipe](https://developers.google.com/mediapipe){:target="_blank"} 
-- [Opencv](https://opencv.org/){:target="_blank"}
-- [PyQtDarkTheme](https://github.com/5yutan5/PyQtDarkTheme){:target="_blank"}
-- [PyExif](https://pypi.org/user/edleafe/){:target="_blank"}
-- StackOverflow contributors (links in source code) 
+- [Mediapipe](https://developers.google.com/mediapipe)
+- [Opencv](https://opencv.org/)
+- [PyQtDarkTheme](https://github.com/5yutan5/PyQtDarkTheme)
+- [PyExif](https://pypi.org/user/edleafe/)
+- StackOverflow contributors (links in source code)
+
+
 
 
 ## License
-This Software is released under the [LGPL-2.1  License](https://open source.org/license/lgpl-2-1/){:target="_blank"} :
+This Software is released under the [LGPL-2.1  License](https://opensource.org/license/lgpl-2-1/#)
 
 
 
