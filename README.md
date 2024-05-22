@@ -14,10 +14,10 @@
 #### ✨✨ Download Version 0.3 Binaries ✨✨         
 
 - **Linux Appimage:** Download, make executable and run
-    * [Appimage for All Linux flavors](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.3.0_linux/PhotoGlimmer-0.3.0-x86_64.AppImage)
+    * [Appimage for All Linux flavors](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.3.0_u22.04py3.10/PhotoGlimmer-0.3.0-x86_64.AppImage)
 - **Ubuntu .deb Installer**: Download and install using apt or gdebi
     * [Python 3.8/Ubuntu 20.04](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.3.0_linux/photoglimmer_0.3.0-1.ubuntu-focal_amd64.deb)
-    * [Python 3.10/Ubuntu 22.04]- to be released
+    * [Python 3.10/Ubuntu 22.04](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.3.0_u22.04py3.10/photoglimmer_0.3.0-1.ubuntu-jammy_amd64.deb)
 - **Windows Installer:** Download and install, tested on Windows11 
     * [Msi Installer](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.3.0/PhotoGlimmer-0.3.0.msi)
 
