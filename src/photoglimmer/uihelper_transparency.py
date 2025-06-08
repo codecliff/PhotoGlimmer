@@ -2,7 +2,8 @@
 # import backend
 import os
 import photoglimmer.photoglimmer_backend as backend
-# all backend variable set by frontend have to be provided as funciton parameters 
+# all backend variable set by frontend have to be provided 
+# as funciton parameters 
 
 
 class  UIHelper:

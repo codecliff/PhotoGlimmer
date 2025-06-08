@@ -1,17 +1,25 @@
-# PhotoGlimmer - Illuminating  People In Photos 
+# PhotoGlimmer - Illuminating  People In Photos ( Version 0.4.0  to be released on 2025-06-10) 
+
+# IMPORTANT -- V 0.4.0 IS NOT LIVE YET! THIS PAGE IS A PLACEHOLDER WHILE I GENERATE THE INSTALLERS . AS OF NOW 0.3 IS THE LATEST VERSION 
+
 #### ✨✨ The photo editor that makes you look as sharp as the landscape behind you (or the vice versa) ✨✨
 
 
-#### ✨✨ New Features In Version 0.3 ✨✨
-        * Seamless foreground/background switching         
-        * Background Defocus 
-        * RAM usage of many operations reduced by 60%
+#### ✨✨ New Features In Version 0.4 ✨✨
+        * Mouse drawn selection to aid or restrict AI human detection          
+        * Preference Dialog 
+        * Choice of start directory
         * Image Preview in File Open dialog 
-        * Copy Foreground to clipboard  
+        * Gimp like Curves for brightness tweaking (Experimental / optional :: see preferences )
+        * No-restart preference switching
+        * Online help page with FAQ
+        * Online interactive graphical help page     
 
 
 
-#### ✨✨ Download Version 0.3 Binaries ✨✨         
+
+#### ✨✨ Download Version 0.4 Binaries ✨✨         
+
 
 - **Linux Appimage:** Download, make executable and run
     * [Appimage for All Linux flavors](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.3.0_u22.04py3.10/PhotoGlimmer-0.3.0-x86_64.AppImage)

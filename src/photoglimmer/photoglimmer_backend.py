@@ -21,7 +21,9 @@ from photoglimmer.photoglimmer_masking import *
 from photoglimmer.photoglimmer_exif import *
 from photoglimmer.photoglimmer_imagelayers import *
 from photoglimmer.photoglimmer_arraylevel import *
-# from memory_profiler import profile
+from photoglimmer.EditingParams import EditingParams
+from memory_profiler import profile
+from line_profiler import profile
 seg_mode="FORE" 
 imageAdjustMode = "HSV"  
 tempdirpath= ""
@@ -39,6 +41,7 @@ bgImgpath=""
 bg_image_params= ImgParams( fgImgpath)
 fg_image_params= ImgParams(bgImgpath )
 currImg= fg_image_params
+editingParams=EditingParams() 
 blurfactor_bg:int=0
 transparency_only:bool=False
 
@@ -75,7 +78,10 @@ def  resizeImageToFit(img_bgr, maxwidth=1200, maxheight=800):
     return cv2.resize(img_bgr, dim2, cv2.INTER_CUBIC )
 
 
-def  blurBackground( k:int ):
+def  blurBackground(  ):
+    if blurfactor_bg == 0:
+        return
+    k = blurfactor_bg
     if (k%2==0):
         k+=1
     blurred_bg_bgr=blurImage(cv2.imread(scaledImgpath),
@@ -84,7 +90,12 @@ def  blurBackground( k:int ):
 
 
 def  tweakAndSaveImage( sourceimg_bgr , imglayer_param):
-    result_bgr = adjustImageHSV(image_bgr=sourceimg_bgr,
+    result_bgr=None
+    if editingParams.isLUTMode:
+        result_bgr = adjustImageLUT2025(image_bgr=sourceimg_bgr,                                          
+                                          lut=imglayer_param.LUT )
+    else:  
+       result_bgr = adjustImageHSV(image_bgr=sourceimg_bgr,
                                           saturation_fact=imglayer_param.saturation,
                                           value_fact=imglayer_param.brightness)
     if currImg.denoise_it:
@@ -104,16 +115,16 @@ def  blurAndSaveMask(imglayer_param,mask_graybgr, originalImage=False ):
 
 
 def  createMaskedBrightness(sourceimg_bgr, maskimgimg_graybgr ,
-                           originalImage=False, isTweakNeeded=True):
+                           originalImage=False
+                           ):
     bright_image_bgr=  sourceimg_bgr.copy()
-    if (isTweakNeeded and not originalImage) :
+    if not originalImage :
         bright_image_bgr =tweakAndSaveImage( bright_image_bgr , currImg)
     if (originalImage) :
         _ =tweakAndSaveImage( bright_image_bgr , fg_image_params)
         _ =tweakAndSaveImage( bright_image_bgr , bg_image_params)
     bright_image_bgr=None
-    if ( blurfactor_bg>1) : 
-        blurBackground(k=blurfactor_bg)
+    blurBackground( )
     mask_graybgr = cv2.resize(maskimgimg_graybgr, sourceimg_bgr.shape[1::-1])
     blurred_mask_graybgr = blurAndSaveMask( currImg, mask_graybgr, originalImage )
     stacked_img_bgr = stackNMask_HSV_u8(
@@ -130,9 +141,16 @@ def  createMaskedBrightness(sourceimg_bgr, maskimgimg_graybgr ,
     return addWted_bgr
 
 
-def  processImageFinal(isOriginalImage=False , isSegmentationNeeded=True , 
-                      isTweakingNeeded=True
+def  processImageFinal(isOriginalImage=False , 
+                      isSegmentationNeeded=True , 
+                      isTweakingNeeded=True,
+                      isLUTneeded=False,
+                      rects=[]
                       ):
+    global editingParams
+    editingParams.setLUTMode(isLUTneeded)
+    editingParams.setSegmentationNeeded(isSegmentationNeeded)
+    editingParams.setTweakNeeded(isTweakingNeeded)
     image_bgr= None
     maskimg_graybgr= cv2.imread(os.path.join(tempdirpath,fname_maskImg))
     if isOriginalImage: 
@@ -141,28 +159,30 @@ def  processImageFinal(isOriginalImage=False , isSegmentationNeeded=True ,
     else: 
         image_bgr =  cv2.imread(scaledImgpath)        
         if (isSegmentationNeeded):
-            maskimg_graybgr= createSegmentationMask_Improved(scaledImgpath,
+            maskimg_graybgr= createMultiRectSegmentationMask(scaledImgpath,
                                                              ImgParams.seg_threshold,
                                                              tempdirpath,
-                                                             fname_maskImg
+                                                             fname_maskImg,
+                                                             rects=rects                                                            
                                                              )
     result_bgr=None  
     global transparency_only
     if (isOriginalImage and transparency_only):
         result_bgra= saveTransparentImage( image_bgr, maskimg_graybgr)
-        transparency_only=False
+        transparency_only=False 
         return result_bgra
     else: 
         result_bgr = createMaskedBrightness(sourceimg_bgr=image_bgr,
                                     maskimgimg_graybgr=maskimg_graybgr,
-                                    originalImage= isOriginalImage)
+                                    originalImage= isOriginalImage,
+                                     )
     return result_bgr
 
 
 def  setCurrValues(seg_threshold, blendweight_img1, blur_edge, postprocess_it,
-                  brightness, saturation, denoise_it):
+                  brightness, saturation, denoise_it, lut):
     currImg.setValues(seg_threshold, blendweight_img1, blur_edge,
-                      postprocess_it, brightness, saturation, denoise_it)
+                      postprocess_it, brightness, saturation, denoise_it, lut)
 
 
 def  switchImgLayer( new_seg_mode ): 
@@ -205,3 +225,27 @@ def  saveTransparentImage(imgbgr, mask_graybgr , outfpath:str=None):
 def  resetBackend():
     switchImgLayer("FORE")
     initializeImageObjects()
+    
+if __name__ == '__main__':
+    import math
+    import tempfile
+    originalImgPath= "image_path_here" 
+    img_bgr=cv2.imread(originalImgPath)
+    tempd = tempfile.TemporaryDirectory(prefix=f"photoglimmer_test_")
+    tempdir = tempd
+    tempdirpath = tempd.name
+    initializeImageObjects()
+    scaledimg_bgr = resizeImageToFit(img_bgr, 1200, 900)
+    setupWorkingImages(scaledimg_bgr)
+    maskimg_graybgr= createMultiRectSegmentationMask(scaledImgpath,
+                                                             ImgParams.seg_threshold,
+                                                             tempdirpath,
+                                                             fname_maskImg,
+                                                             rects=[]                                                            
+                                                             )
+    processImageFinal(isOriginalImage=True , 
+                      isSegmentationNeeded=True , 
+                      isTweakingNeeded=True,
+                      isLUTneeded=False,
+                      rects=[]
+                      )

@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PreferencesDialog</class>
+ <widget class="QDialog" name="PreferencesDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>450</width>
+    <height>472</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Preferences</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_Main">
+   <item>
+    <widget class="QGroupBox" name="brightnessGroup">
+     <property name="toolTip">
+      <string>Tweak brightenss with sliders or curves</string>
+     </property>
+     <property name="title">
+      <string>Brightness Editing Mode</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_Brightness">
+      <item>
+       <widget class="QRadioButton" name="slidersRadio">
+        <property name="text">
+         <string>Sliders</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="curveRadio">
+        <property name="text">
+         <string>Color Curve (Experimental)</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="fileOpenGroup">
+     <property name="title">
+      <string>File Open Dialogue</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_FileOpen">
+      <item>
+       <widget class="QRadioButton" name="systemRadio">
+        <property name="text">
+         <string>System (shows recent files)</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="appRadio">
+        <property name="text">
+         <string>Application  (shows image preview)</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="startFolderGroup">
+     <property name="toolTip">
+      <string> Start  Location for Image Browsing </string>
+     </property>
+     <property name="title">
+      <string>Application Start Folder</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_StartFolder">
+      <item>
+       <widget class="QRadioButton" name="picturesRadio">
+        <property name="text">
+         <string>Pictures Folder</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="homeRadio">
+        <property name="text">
+         <string>Home Folder</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="lastRadio">
+        <property name="text">
+         <string>Last Opened Folder</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_Custom">
+        <item>
+         <widget class="QRadioButton" name="customRadio">
+          <property name="text">
+           <string>Custom Folder:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="customPathEdit">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="browseButton">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Browse...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="denoiseCheck">
+     <property name="toolTip">
+      <string> Activate denoising always? (slow)</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">border-color: rgb(88, 110, 117);</string>
+     </property>
+     <property name="text">
+      <string>Denoise On</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok|QDialogButtonBox::RestoreDefaults</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>PreferencesDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>PreferencesDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

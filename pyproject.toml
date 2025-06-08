@@ -16,10 +16,10 @@
 [tool.briefcase]
 project_name = "PhotoGlimmer"
 bundle = "com.github.photoglimmer"
-version = "0.3.0"
+version = "0.4.0"
 url = "https://github.com/codecliff/PhotoGlimmer"
-license = "LGPL license"
-author = "Rahul singh"
+license.file = "LICENSE"
+author = "Rahul Singh"
 author_email = "codecliff@users.noreply.github.com"
 
 [tool.briefcase.app.photoglimmer]
@@ -39,6 +39,7 @@ test_sources = [
     "tests",
 ]
 
+
 requires = [
 "opencv-contrib-python==4.8.1.78",
 "PySide2~=5.15",
@@ -46,8 +47,12 @@ requires = [
 "numpy~=1.19",
 "pyqtdarktheme ~=2.1.0",
 "splines ~= 0.3.0",
-"piexif ~= 1.1.3"
+"piexif ~= 1.1.3",
+"Pympler ~=1.1",
+"memory-profiler ~=0.61.0",
+"line-profiler ~=4.2.0"
 ]
+
 test_requires = [
     "pytest",
 ]
