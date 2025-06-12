@@ -1,8 +1,18 @@
 # PhotoGlimmer - Illuminating  People In Photos ( Version 0.4.0  to be released on 2025-06-10) 
 
-# IMPORTANT -- V 0.4.0 IS NOT LIVE YET! THIS PAGE IS A PLACEHOLDER WHILE I GENERATE THE INSTALLERS . AS OF NOW 0.3 IS THE LATEST VERSION 
-
 #### ✨✨ The photo editor that makes you look as sharp as the landscape behind you (or the vice versa) ✨✨
+
+
+
+
+<br/>
+<br/>
+
+#✨✨V 0.4.0 (June 2025) is coming  ✨✨
+
+
+
+#### ✨✨ New Help Website on Github Pages : [Home](https://codecliff.github.io/photoglimmer/)  [Help](https://codecliff.github.io/photoglimmer/photoglimmer_help.html) [Interactive](https://codecliff.github.io/photoglimmer/photoglimmer_guide.html) [FAQs](https://codecliff.github.io/photoglimmer/photoglimmer_help.html#faq)  ✨✨
 
 
 #### ✨✨ New Features In Version 0.4 ✨✨
@@ -12,27 +22,28 @@
         * Image Preview in File Open dialog 
         * Gimp like Curves for brightness tweaking (Experimental / optional :: see preferences )
         * No-restart preference switching
+        * Help Menu
         * Online help page with FAQ
         * Online interactive graphical help page     
 
 
 
 
-#### ✨✨ Download Version 0.4 Binaries ✨✨         
+#### ✨✨ Download Version 0.4 Binaries (not yet released . these are links to 0.3)✨✨         
 
 
-- **Linux Appimage:** Download, make executable and run
+- **Linux Appimage:** Download, make executable and run 
     * [Appimage for All Linux flavors](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.3.0_u22.04py3.10/PhotoGlimmer-0.3.0-x86_64.AppImage)
-- **Ubuntu .deb Installer**: Download and install using apt or gdebi
-    * [Python 3.8/Ubuntu 20.04](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.3.0_linux/photoglimmer_0.3.0-1.ubuntu-focal_amd64.deb)
-    * [Python 3.10/Ubuntu 22.04](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.3.0_u22.04py3.10/photoglimmer_0.3.0-1.ubuntu-jammy_amd64.deb)
+- **Ubuntu .deb Installer**: Download and install using apt or gdebi 
+    * [.Deb for Ubuntu](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.3.0_u22.04py3.10/photoglimmer_0.3.0-1.ubuntu-jammy_amd64.deb)
 - **Windows Installer:** Download and install, tested on Windows11 
     * [Msi Installer](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.3.0/PhotoGlimmer-0.3.0.msi)
 
   All releases can be found onthe [release page](https://github.com/codecliff/PhotoGlimmer/releases) ( expand the Asset sections ) 
 
 
-  
+<br/>
+<br/>
 
 
 
@@ -124,8 +135,8 @@ So, if you are using the .deb or .AppImage version, you need to have only **Pyth
 
 
 ## Tested On:
-- Ubuntu 20.04,22.04 
-- Fedora Linux 35 (VM, 4 GB RAM)
+- Ubuntu 22.04 
+- Fedora Linux 35 (VM, 4 GB RAM) (v 0.3.0 tested)
 - Windows11
 
 
@@ -133,7 +144,8 @@ So, if you are using the .deb or .AppImage version, you need to have only **Pyth
 # Installation and Running: 
 
 > [!NOTE]
-> Binary installers are at the top of this page (V0.3 Binaries)[https://github.com/codecliff/PhotoGlimmer/edit/0_3/README.md#-download-version-03-binaries-]
+> Latest binary installers are at the top of this Readme
+> Previous Version binaries at the bottom 
 > [All Binary Release Assets](https://github.com/codecliff/PhotoGlimmer/releases/). 
 
 
@@ -141,6 +153,7 @@ So, if you are using the .deb or .AppImage version, you need to have only **Pyth
 
 - Just download the Appimage file and execute. 
 - You don't need to install anything, appimages have everything and the kitchen sink bundled in.
+- You might need to set the Appimage file as executable 
 
 ## Method 2. Install .deb (Ubuntu) : 
 
@@ -196,9 +209,22 @@ Follow these steps to install dependencies and run PhotoGlimmer :
 
 - <strike>As of now, the the application discards the EXIF data of the image. (Implemented in V 0.3.0)</strike> 
 - <strike>You cannot simultaneously edit both background and foreground in one session. (Implemented in V 0.3.0)</strike> 
-- No Preference Dialog
+- <strike>No Preference Dialog</strike> 
 - Reset messes up image display height
 - Issue Tracker is here:  [Issues](https://github.com/codecliff/photoglimmer/issues)
+
+<hr >
+
+#### ✨✨ Previous Version (v0.3) Binaries ✨✨         
+
+
+- **Linux Appimage:** Download, make executable and run
+    * [Appimage for All Linux flavors](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.3.0_u22.04py3.10/PhotoGlimmer-0.3.0-x86_64.AppImage)
+- **Ubuntu .deb Installer**: Download and install using apt or gdebi
+    * [Python 3.8/Ubuntu 20.04](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.3.0_linux/photoglimmer_0.3.0-1.ubuntu-focal_amd64.deb)
+    * [Python 3.10/Ubuntu 22.04](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.3.0_u22.04py3.10/photoglimmer_0.3.0-1.ubuntu-jammy_amd64.deb)
+- **Windows Installer:** Download and install, tested on Windows11 
+    * [Msi Installer](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.3.0/PhotoGlimmer-0.3.0.msi)
 
 <hr/>
 
@@ -208,6 +234,7 @@ Follow these steps to install dependencies and run PhotoGlimmer :
 - [Opencv](https://opencv.org/)
 - [PyQtDarkTheme](https://github.com/5yutan5/PyQtDarkTheme)
 - [PyExif](https://pypi.org/user/edleafe/)
+- [Beeware](https://beeware.org/project/briefcase/)
 - StackOverflow contributors (links in source code)
 
 
