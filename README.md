@@ -1,4 +1,4 @@
-# PhotoGlimmer - Illuminating  People In Photos ( Version 0.4.0  to be released on 2025-06-10) 
+# PhotoGlimmer - Illuminating  People In Photos  
 
 #### ✨✨ The photo editor that makes you look as sharp as the landscape behind you (or the vice versa) ✨✨
 
