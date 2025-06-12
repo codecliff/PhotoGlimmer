@@ -1,4 +1,13 @@
 
+# ###############################################################################
+# Copyright : Rahul Singh
+# URL       : https://github.com/codecliff/PhotoGlimmer
+# License   : LGPL
+# email     : codecliff@users.noreply.github.com
+# Disclaimer: No warranties, stated or implied.
+# Description :
+# Helper funcitons for foreground/background layers
+# ###############################################################################
 import numpy as np
 import cv2
 

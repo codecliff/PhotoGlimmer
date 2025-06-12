@@ -4,6 +4,7 @@
 ## will be useful for-
 ## 1) loading parameters on bg-fg switch
 ## and 2) when apllying to whole image for save
+import numpy as np
 
 
 class  ImgParams:
@@ -19,7 +20,8 @@ class  ImgParams:
         self.imgpath= imgpath
         self.brightness = 1.0
         self.saturation = 1.0
-        self.denoise_it = True
+        self.denoise_it = False 
+        self.LUT= None
 
 
     def  setValues(  self, 
@@ -29,11 +31,14 @@ class  ImgParams:
             postprocess_it: bool,
             brightness: float,
             saturation: float,
-            denoise_it: bool):
+            denoise_it: bool,
+            lut:np.ndarray
+            ):
         ImgParams.seg_threshold = seg_threshold
         ImgParams.blendweight_img1 = blendweight_img1
         ImgParams.blur_edge = blur_edge
         ImgParams.postprocess_it = postprocess_it
         self.brightness = brightness
         self.saturation = saturation
-        self.denoise_it = denoise_it
+        self.denoise_it = denoise_it        
+        self.LUT= lut

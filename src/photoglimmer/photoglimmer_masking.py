@@ -1,4 +1,14 @@
 
+# ###############################################################################
+# Copyright : Rahul Singh
+# URL       : https://github.com/codecliff/PhotoGlimmer
+# License   : LGPL
+# email     : codecliff@users.noreply.github.com
+# Disclaimer: No warranties, stated or implied.
+# Description :
+# Image Segmentation and Masking occurs here 
+# Current implementation uses mediapipe only
+# ###############################################################################
 import os
 import numpy as np
 import cv2
@@ -36,9 +46,10 @@ def  __createSegmentationMask(imgpath, thresh):
 
 def  createSegmentationMask_Improved(imgpath, thresh, 
                                     tempdirpath,fname_maskImg,  ):
+    boxedImgPath= imgpath 
     image_copy_bgr = cv2.imread(imgpath)  
     height,width,_= image_copy_bgr.shape
-    mask_image_graybgr= __createSegmentationMask(imgpath,thresh)
+    mask_image_graybgr= __createSegmentationMask(boxedImgPath, thresh) 
     mask_copy_gray=cv2.cvtColor(mask_image_graybgr, cv2.COLOR_BGR2GRAY) 
     contours, hierarchy = cv2.findContours(mask_copy_gray, cv2.RETR_EXTERNAL, 
                                       cv2.CHAIN_APPROX_NONE)
@@ -55,3 +66,20 @@ def  createSegmentationMask_Improved(imgpath, thresh,
     mask_image_graybgr[Y:Y+H, X:X+W] = croppedimg_mask_graybgr    
     cv2.imwrite(os.path.join(tempdirpath,fname_maskImg), mask_image_graybgr, params=[cv2.IMWRITE_JPEG_QUALITY, 100] )         
     return mask_image_graybgr    
+
+
+def  createMultiRectSegmentationMask(imgpath, thresh, tempdirpath,
+                                    fname_maskImg,rects):
+    image_copy_bgr = cv2.imread(imgpath)
+    if rects is None or len(rects)==0:
+        rects=[(0,0, image_copy_bgr.shape[0], image_copy_bgr.shape[1])]
+    maskimg_bgr= image_copy_bgr.copy()*0 
+    imgx_tmp_path= os.path.join(tempdirpath, 'cropped_image_tmp.jpg') 
+    for rect in rects:
+        x, y, width, height = rect  
+        cropped_image = image_copy_bgr[y:y+height, x:x+width, :]
+        cv2.imwrite(imgx_tmp_path, cropped_image, params=[cv2.IMWRITE_JPEG_QUALITY, 100])  
+        cropped_mask= __createSegmentationMask(imgpath=imgx_tmp_path, thresh=thresh)
+        maskimg_bgr[y:y+height, x:x+width,:] = cropped_mask
+    cv2.imwrite(os.path.join(tempdirpath,fname_maskImg), maskimg_bgr, params=[cv2.IMWRITE_JPEG_QUALITY, 100] )         
+    return maskimg_bgr; 

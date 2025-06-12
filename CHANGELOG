@@ -2,14 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+---
 
-## [0.2.0] - 2023-12-07
+## [0.4.0] - 2025-06-08
 
 ### Added
 
-- Image preview in fileopen 
-- Exif handling
+-   **Mouse-drawn foreground selection**: Users can now define foreground elements with freehand mouse drawing.
+-   **Preferences**:  Qsetting based preferences and pref dialog
+-   **Curve-based editing (Experimental)**: Introducing an experimental feature for more precise, curve-based image adjustments.
+-   **Online user guide**: Long user guide with FAQ.
+-   **Online interactive user guide**: Interactive graphical user guide .
+
+### Fixed
+
+-   **Always enabled background blur slider**: User can now blur background even when editing foreground
+-   **Segmentation mask shown on image load**: User doen't have to start tweaking to see the segmentation mask.
 
