@@ -8,7 +8,7 @@
 <br/>
 <br/>
 
-#✨✨V 0.4.0 (June 2025) is coming  ✨✨
+#✨✨ V 0.4.0 (June 2025) is here ✨✨
 
 
 
@@ -29,17 +29,23 @@
 
 
 
-#### ✨✨ Download Version 0.4 Binaries (not yet released . these are links to 0.3)✨✨         
+#### ✨✨ Download Version 0.4 Binaries ✨✨         
 
 
-- **Linux Appimage:** Download, make executable and run 
-    * [Appimage for All Linux flavors](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.3.0_u22.04py3.10/PhotoGlimmer-0.3.0-x86_64.AppImage)
+- **Linux Appimage:** Download, make executable, and run 
+    * [Appimage for All Linux flavors](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.4.0_linux/PhotoGlimmer-0.4.0-x86_64.AppImage)
 - **Ubuntu .deb Installer**: Download and install using apt or gdebi 
-    * [.Deb for Ubuntu](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.3.0_u22.04py3.10/photoglimmer_0.3.0-1.ubuntu-jammy_amd64.deb)
+    * [Deb for Ubuntu](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.4.0_linux/photoglimmer_0.4.0-1.ubuntu-jammy_amd64.deb)
 - **Windows Installer:** Download and install, tested on Windows11 
-    * [Msi Installer](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.3.0/PhotoGlimmer-0.3.0.msi)
+    * [Msi Installer](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.4.0_win/PhotoGlimmer-0.4.0.msi) 
 
-  All releases can be found onthe [release page](https://github.com/codecliff/PhotoGlimmer/releases) ( expand the Asset sections ) 
+<br/>
+
+[ SHA256 sums  _:<br/>   bb082f8126236be4078b14183308f21f71183e802f4a192765bc923e25a4c5b4 , <br/> bb082f8126236be4078b14183308f21f71183e802f4a192765bc923e25a4c5b4 , <br/> c2de387f16efde3c4cfa9802d085d66b6377268684348352923f6e5cb50400c9 ]_ 
+
+<br/>
+
+  All releases can also be found onthe [release page](https://github.com/codecliff/PhotoGlimmer/releases) ( expand the **Asset** sections ) 
 
 
 <br/>
