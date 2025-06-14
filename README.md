@@ -12,7 +12,7 @@
 
 
 
-#### ✨✨ New Help Website on Github Pages : [Home](https://codecliff.github.io/photoglimmer/)  [Help](https://codecliff.github.io/photoglimmer/photoglimmer_help.html) [Interactive](https://codecliff.github.io/photoglimmer/photoglimmer_guide.html) [FAQs](https://codecliff.github.io/photoglimmer/photoglimmer_help.html#faq)  ✨✨
+#### ✨✨ New Help Website on Github Pages : [Home](https://codecliff.github.io/photoglimmer/)  | [User Manual](https://codecliff.github.io/photoglimmer/photoglimmer_help.html) | [Interactive](https://codecliff.github.io/photoglimmer/photoglimmer_guide.html) | [FAQs](https://codecliff.github.io/photoglimmer/photoglimmer_help.html#faq)  ✨✨
 
 
 #### ✨✨ New Features In Version 0.4 ✨✨
@@ -74,14 +74,14 @@ Beware- Unlike a phone app, PhotoGlimmer gives you full control of the segmentat
 
 
 <p align="center">
-  <img width="1000" height="526" src="screenshot_photoglimmer_03.png", alt= "Screenshot of PhotoGlimmer image editor"/>
+  <img width="80%" height="auto" src="screenshot_photoglimmer_03.png", alt= "Screenshot of PhotoGlimmer image editor"/>
   <br> Photo Credit: <a href="https://www.flickr.com/photos/portishead520/16524721706/#">Flickr cc </a> 
 </p>
 
 # Samples
 
 <p align="center">
-  <img width="1000" height="666" src="photoglimmer_collage_smaller.jpg", alt= "Sample results for PhotoGlimmer image editor"/>
+  <img width="80%" height="auto" src="photoglimmer_collage_smaller.jpg", alt= "Sample results for PhotoGlimmer image editor"/>
   <br> Photo Credit: <a href="https://www.flickr.com/photos/portishead520/16524721706/#">Flickr cc </a> 
 </p>
 
