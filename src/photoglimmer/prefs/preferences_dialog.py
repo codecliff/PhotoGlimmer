@@ -2,11 +2,11 @@
 # preferences_dialog.py
 import sys
 import os
-from PySide2.QtWidgets import (QApplication, QDialog, QFileDialog, QMessageBox,
+from PySide6.QtWidgets import (QApplication, QDialog, QFileDialog, QMessageBox,
                                QWidget, QRadioButton, QVBoxLayout,
                                QDialogButtonBox)
-from PySide2.QtCore import QFile, QSettings, QStandardPaths, Slot
-from PySide2.QtUiTools import QUiLoader
+from PySide6.QtCore import QFile, QSettings, QStandardPaths, Slot
+from PySide6.QtUiTools import QUiLoader
 # --- Import the configuration ---
 #standard way of importing form same package  is to add . prefix
 from .settings_config import SettingsConfig

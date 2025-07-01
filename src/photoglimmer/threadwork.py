@@ -1,9 +1,8 @@
-
 # source for all the code in  this file :
 # https://gist.github.com/sabapathygithub/160ecf262063bcb826787a7af1637f44
-from PySide2.QtCore import QObject,QRunnable,QThreadPool
-from PySide2.QtCore import Signal as pyqtSignal
-from PySide2.QtCore import Slot as pyqtSlot
+from PySide6.QtCore import QObject,QRunnable,QThreadPool
+from PySide6.QtCore import Signal as pyqtSignal
+from PySide6.QtCore import Slot as pyqtSlot
 import sys,traceback
 
 

@@ -41,8 +41,8 @@ test_sources = [
 
 
 requires = [
-"opencv-contrib-python==4.8.1.78",
-"PySide2~=5.15",
+"opencv-contrib-python-headless==4.8.1.78",
+"PySide6~=6.5",
 "mediapipe==0.10.7",
 "numpy~=1.19",
 "pyqtdarktheme ~=2.1.0",

@@ -5,9 +5,9 @@
 # File license CC BY-SA 3.0
 # ###############################################################################
 import sys
-from PySide2.QtCore import Qt
-from PySide2.QtGui import QPixmap
-from PySide2.QtWidgets import QApplication, QFileDialog, QVBoxLayout, QLabel, QDialog
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QPixmap
+from PySide6.QtWidgets import QApplication, QFileDialog, QVBoxLayout, QLabel, QDialog
 import  qdarktheme
 
 

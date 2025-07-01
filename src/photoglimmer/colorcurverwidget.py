@@ -1,9 +1,8 @@
-
 import sys
-from PySide2 import QtWidgets, QtGui, QtCore
-from PySide2.QtWidgets import QWidget, QApplication, QVBoxLayout, QHBoxLayout, QPushButton # Added layouts/button
-from PySide2.QtGui import QPainter, QPen, QBrush, QColor, QPainterPath, QPalette
-from PySide2.QtCore import QPointF, QRectF, Qt, Signal
+from PySide6 import QtWidgets, QtGui, QtCore
+from PySide6.QtWidgets import QWidget, QApplication, QVBoxLayout, QHBoxLayout, QPushButton # Added layouts/button
+from PySide6.QtGui import QPainter, QPen, QBrush, QColor, QPainterPath, QPalette
+from PySide6.QtCore import QPointF, QRectF, Qt, Signal
 import math
 from pympler import asizeof
 # import copy # Needed for deep copying QPointF list during save/load if necessary
