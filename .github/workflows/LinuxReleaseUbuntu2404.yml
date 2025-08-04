@@ -8,8 +8,8 @@ name: LinuxReleaseUbuntu2404
 # Runs manually, will prompt for release tag
 
 on:
-  #push:
-  #  branches: [ master ] 
+  push:
+    branches: [ feature/pr-pyside6 ] 
   #pull_request:
   #  branches: [ master ]
   workflow_dispatch:
