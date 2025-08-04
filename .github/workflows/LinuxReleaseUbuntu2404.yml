@@ -8,8 +8,8 @@ name: LinuxReleaseUbuntu2404
 # Runs manually, will prompt for release tag
 
 on:
-  push:
-    branches: [ feature/pr-pyside6 ] 
+  #push:
+  #  branches: [ feature/pr-pyside6 ] 
   #pull_request:
   #  branches: [ master ]
   workflow_dispatch:
@@ -17,7 +17,11 @@ on:
         reltag:
           description: "tag for release, eg v1.0.0_linux"
           required: true
-          default: "latest"       
+          default: "latest" 
+  #trigger when a relaease tag is pushed . disable this later
+  push:
+    tags:
+      - 'v*'       
           
 permissions:      
     contents: write
