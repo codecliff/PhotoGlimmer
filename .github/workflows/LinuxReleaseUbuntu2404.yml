@@ -65,9 +65,9 @@ jobs:
       - uses: marvinpinto/action-automatic-releases@latest # {{xyz}}varaibles not available in uses
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"          
-          automatic_release_tag: "${{ inputs.reltag }}" 
+          automatic_release_tag:  "v0.5.0Beta2"  #"${{ inputs.reltag }}" 
           prerelease: false
-          title: "Build ${{ github.event.inputs.reltag }}" #same as inputs.reltag 
+          title: "Build v0.5.0Beta2" #${{ github.event.inputs.reltag }}" #same as inputs.reltag 
           files: |                
             ./dist/*.deb
      
