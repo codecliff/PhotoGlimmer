@@ -6,17 +6,18 @@
 # Disclaimer: No warranties, stated or implied.
 # Description :
 # This is the configuration file for generating appimages and deb  insallers for the PhotoGlimmer project
-# IMPORTANT: Make sure that dependencies list provides EXACT VERSIONS of opencv-contrib-python and mediapipe,
-#            otherwise  install size will bloat up !
+# IMPORTANT: Make sure that dependencies list provides a version of mediapipe which does not require PyTorch,
+#            otherwise the install size will bloat up !
 #
-# This config file was generated with 0.3.15 using template: https://github.com/beeware/briefcase-template@v0.3.15
+# This config file was generated with 0.3.23 using template: https://github.com/beeware/briefcase-template@v0.3.23
+# Last major Edit -  Aug 2024 (for v0.5.0)
 # ###############################################################################
 
 
 [tool.briefcase]
 project_name = "PhotoGlimmer"
 bundle = "com.github.photoglimmer"
-version = "0.4.0"
+version = "0.5.0"
 url = "https://github.com/codecliff/PhotoGlimmer"
 license.file = "LICENSE"
 author = "Rahul Singh"
@@ -24,7 +25,7 @@ author_email = "codecliff@users.noreply.github.com"
 
 [tool.briefcase.app.photoglimmer]
 formal_name = "PhotoGlimmer"
-description = "AI powered photo editor to tweak illumination on people without altering the background"
+description = "AI powered photo editor to tweak illumination separately on people or background"
 long_description = """
  Shine a light on individuals with the help of a few sliders, without altering the scene. \
  This AI-powered photo editor lets you precisely adjust illumination on people, \
@@ -32,6 +33,8 @@ long_description = """
  """
 
 icon = "src/photoglimmer/icons/appicon"
+
+
 sources = [
     "src/photoglimmer",
 ]
@@ -39,27 +42,33 @@ test_sources = [
     "tests",
 ]
 
-
+# Rahul- v0.5.0 changes:
+# PySide6 
+# Some requirements updated for python 3.12 compatibility
+# As far as possible , kept the same version
+# Some removed as they are installed with other requirements
+# mediapipe - only v0.11.0 requires pytorch, v0.13.0 is lightweight
+# pyqtdarktheme-fork is in-place pyqtdarktheme replacement for python 3.12
 requires = [
-"opencv-contrib-python-headless==4.8.1.78",
-"PySide6~=6.5",
-"mediapipe==0.10.7",
-"numpy~=1.19",
-"pyqtdarktheme ~=2.1.0",
-"splines ~= 0.3.0",
-"piexif ~= 1.1.3",
-"Pympler ~=1.1",
-"memory-profiler ~=0.61.0",
-"line-profiler ~=4.2.0"
+    "PySide6-Essentials==6.8.1",
+    "mediapipe==0.10.13",    
+    "pyqtdarktheme-fork",
+    "splines ~= 0.3.0",
+    "piexif ~= 1.1.3",
+    "Pympler ~=1.1",
+    "memory-profiler ~=0.61.0",
+    "line-profiler ~=4.2.0"    
 ]
-
 test_requires = [
     "pytest",
 ]
 
 [tool.briefcase.app.photoglimmer.macOS]
+universal_build = true
+# As of Pyside 6.8, PySide enforces a macOS 12 minimum on wheels.
+min_os_version = "12.0"
 requires = [
-    "std-nslog~=1.0.0"
+    "std-nslog~=1.0.3",
 ]
 
 [tool.briefcase.app.photoglimmer.linux]
@@ -70,7 +79,28 @@ requires = [
 system_requires = [
 ]
 
+# Rahul- This section ensures proper containerized bundling  
 system_runtime_requires = [
+    # Derived from https://doc.qt.io/qt-6/linux-requirements.html
+    "libxext6",
+    "libxrender1",
+    "libx11-xcb1",
+    "libxkbcommon-x11-0",
+    "libxcb-image0",
+    "libxcb-cursor0",
+    "libxcb-shape0",
+    "libxcb-randr0",
+    "libxcb-xfixes0",
+    "libxcb-sync1",
+    "libxcb-icccm4",
+    "libxcb-keysyms1",
+    "libfontconfig1",
+    "libsm6",
+    "libice6",
+    "libglib2.0-0",
+    "libgl1",
+    "libegl1",
+    "libdbus-1-3",
 ]
 
 [tool.briefcase.app.photoglimmer.linux.system.rhel]
@@ -78,6 +108,16 @@ system_requires = [
 ]
 
 system_runtime_requires = [
+    "qt6-qtbase-gui",
+]
+
+[tool.briefcase.app.photoglimmer.linux.system.suse]
+system_requires = [
+]
+
+system_runtime_requires = [
+    "libgthread-2_0-0",
+    "libQt6Gui6",
 ]
 
 [tool.briefcase.app.photoglimmer.linux.system.arch]
@@ -85,22 +125,27 @@ system_requires = [
 ]
 
 system_runtime_requires = [
+    "qt6-base",
 ]
 
 [tool.briefcase.app.photoglimmer.linux.appimage]
-manylinux = "manylinux2014"
+manylinux = "manylinux_2_28"
 
 system_requires = [
+# ?? FIXME
 ]
-linuxdeploy_plugins = []
+
+linuxdeploy_plugins = [
+]
 
 [tool.briefcase.app.photoglimmer.linux.flatpak]
-flatpak_runtime = "org.freedesktop.Platform"
-flatpak_runtime_version = "22.08"
-flatpak_sdk = "org.freedesktop.Sdk"
+flatpak_runtime = "org.kde.Platform"
+flatpak_runtime_version = "6.9"
+flatpak_sdk = "org.kde.Sdk"
 
 [tool.briefcase.app.photoglimmer.windows]
-requires = []
+requires = [
+]
 
 # Mobile deployments
 [tool.briefcase.app.photoglimmer.iOS]
@@ -112,3 +157,4 @@ supported = false
 # Web deployments
 [tool.briefcase.app.photoglimmer.web]
 supported = false
+

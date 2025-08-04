@@ -21,7 +21,8 @@ class  QFileDialogPreview(QFileDialog):
         self.setWindowTitle("PhotoGlimmer: Open an Image")        
         layoutV = QVBoxLayout()
         layoutV.setAlignment(Qt.AlignVCenter )
-        layoutV.setMargin(10)
+        #layoutV.setMargin(10)
+        layoutV.setContentsMargins(10, 10, 10, 10) #PysSide6 
         self.setBaseSize(self.width() + 350, self.height())
         self.setSizeGripEnabled(True)
         self.setNameFilter('Images (*.png *.jpg *.bmp *.webp *.JPG *.jpeg *.JPEG )')
