@@ -7,12 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [0.5.0] - 2025-08-04
+## [0.5.0] - 2025-08-17
 
 ### Added
 
--   **Transition to Qt6 and Migration to PySide6**: 
+-   **Transition to Qt6 and PySide6**: 
 -   **Better bundling of dependencies**:  Project configuration files enhanced 
+-   **New code contributor : Stephan Schielke https://github.com/stephanschielke/
 -   
 
 ### Fixed

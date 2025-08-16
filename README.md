@@ -8,14 +8,24 @@
 <br/>
 <br/>
 
-#✨✨ V 0.4.0 (June 2025) is here ✨✨
+#### ✨✨ V 0.5.0 (Augus 2025) is coming soon ✨✨
+        * Multiple enhancements under the hood       
+        * Code Upgrade to Qt6 and Pyside6           
+        * Improvements made to installers  
+
+
+>  ⚡⚡ New contributor :   [Stephan Schielke](https://github.com/stephanschielke/) ⚡⚡
+
+
+<br/>
+
 
 
 
 #### ✨✨ New Help Website on Github Pages : [Home](https://codecliff.github.io/photoglimmer/)  | [User Manual](https://codecliff.github.io/photoglimmer/photoglimmer_help.html) | [Interactive](https://codecliff.github.io/photoglimmer/photoglimmer_guide.html) | [FAQs](https://codecliff.github.io/photoglimmer/photoglimmer_help.html#faq)  ✨✨
 
 
-#### ✨✨ New Features In Version 0.4 ✨✨
+#### ✨✨ New Features Added In June 2025 Version 0.4 ✨✨
         * Mouse drawn selection to aid or restrict AI human detection          
         * Preference Dialog 
         * Choice of start directory
