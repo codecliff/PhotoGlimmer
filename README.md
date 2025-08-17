@@ -39,14 +39,14 @@
 
 
 
-#### ✨✨ Download Version 0.4 Binaries ✨✨         
+#### ✨✨💻 💻  Download Version 0.4 Binaries 💻 💻 ✨✨         
 
 
-- **Linux Appimage:** Download, make executable, and run 
+> - 💻 **Linux Appimage:** Download, make executable, and run 
     * [Appimage for All Linux flavors](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.4.0_linux/PhotoGlimmer-0.4.0-x86_64.AppImage)
-- **Ubuntu .deb Installer**: Download and install using apt or gdebi 
+> - 💻 **Ubuntu .deb Installer**: Download and install using apt or gdebi 
     * [Deb for Ubuntu](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.4.0_linux/photoglimmer_0.4.0-1.ubuntu-jammy_amd64.deb)
-- **Windows Installer:** Download and install, tested on Windows11 
+> - 💻 **Windows Installer:** Download and install, tested on Windows11 
     * [Msi Installer](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.4.0_win/PhotoGlimmer-0.4.0.msi) 
 
 <br/>
