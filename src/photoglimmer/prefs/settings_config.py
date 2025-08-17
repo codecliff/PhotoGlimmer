@@ -1,6 +1,6 @@
 
 # settings_config.py
-from PySide2.QtCore import QStandardPaths
+from PySide6.QtCore import QStandardPaths
 
 
 class  SettingsConfig:

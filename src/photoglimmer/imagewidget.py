@@ -1,4 +1,3 @@
-
 # ###############################################################################
 # Copyright : Rahul Singh
 # URL       : https://github.com/codecliff/PhotoGlimmer
@@ -14,7 +13,7 @@
 # ###############################################################################
 import sys
 from enum import Enum
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 # --- Interaction Modes Enum ---
 
 

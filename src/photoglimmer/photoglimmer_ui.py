@@ -14,11 +14,11 @@ import traceback
 #imports
 import os, sys, shutil, time, tempfile
 # QT
-from PySide2 import QtWidgets,  QtCore
-from PySide2.QtUiTools import QUiLoader
-from PySide2.QtGui import QPixmap, QIcon, QMovie, QKeySequence
-from PySide2.QtCore import QThreadPool, QFile,QSettings,QStandardPaths
-from PySide2.QtWidgets import QStyle, QMessageBox, QAction, QGridLayout,QLabel, QDialog
+from PySide6 import QtWidgets,  QtCore
+from PySide6.QtUiTools import QUiLoader
+from PySide6.QtGui import QPixmap, QIcon, QMovie, QKeySequence, QAction
+from PySide6.QtCore import QThreadPool, QFile,QSettings,QStandardPaths
+from PySide6.QtWidgets import QStyle, QMessageBox, QGridLayout,QLabel, QDialog
 # Only if using qdarktheme style
 import  qdarktheme
 # This application
@@ -190,7 +190,7 @@ class  Ui(QtWidgets.QMainWindow):
 
 
     def  getImagesDirectory(self):
-        from  PySide2.QtCore import QStandardPaths
+        from  PySide6.QtCore import QStandardPaths
         pth=QStandardPaths.PicturesLocation
         sysimgfolder= str(QStandardPaths.writableLocation(pth) )
         if os.path.exists(sysimgfolder):
@@ -636,7 +636,8 @@ class  Ui(QtWidgets.QMainWindow):
 
 
     def  getScreenSize( self ):
-        from PySide2.QtWidgets import QApplication, QDesktopWidget
+        from PySide6.QtWidgets import QApplication
+        from PySide6.QtGui import QScreen
         desktop = QDesktopWidget()
         screen_width = desktop.screenGeometry().width()
         screen_height = desktop.screenGeometry().height()

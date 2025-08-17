@@ -5,9 +5,9 @@
 # File license CC BY-SA 3.0
 # ###############################################################################
 import sys
-from PySide2.QtCore import Qt
-from PySide2.QtGui import QPixmap
-from PySide2.QtWidgets import QApplication, QFileDialog, QVBoxLayout, QLabel, QDialog
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QPixmap
+from PySide6.QtWidgets import QApplication, QFileDialog, QVBoxLayout, QLabel, QDialog
 import  qdarktheme
 
 
@@ -21,7 +21,8 @@ class  QFileDialogPreview(QFileDialog):
         self.setWindowTitle("PhotoGlimmer: Open an Image")        
         layoutV = QVBoxLayout()
         layoutV.setAlignment(Qt.AlignVCenter )
-        layoutV.setMargin(10)
+        #layoutV.setMargin(10)
+        layoutV.setContentsMargins(10, 10, 10, 10) #PysSide6 
         self.setBaseSize(self.width() + 350, self.height())
         self.setSizeGripEnabled(True)
         self.setNameFilter('Images (*.png *.jpg *.bmp *.webp *.JPG *.jpeg *.JPEG )')

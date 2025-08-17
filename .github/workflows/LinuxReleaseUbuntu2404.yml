@@ -1,0 +1,76 @@
+name: LinuxReleaseUbuntu2404
+
+# Creates a Linux Installer using beeware-briefcase and github actions
+# Generates .deb file an  Python 3.12 and Ubuntu 24.04
+# We are using this separate workflow instead of building on docker in 22.04 
+# Author: Rahul Singh
+# https://github.com/codecliff/PhotoGlimmer
+# Runs manually, will prompt for release tag
+
+on:
+  #push:
+  #  branches: [ feature/pr-pyside6 ] 
+  #pull_request:
+  #  branches: [ master ]
+  workflow_dispatch:
+      inputs: #when run, ask user to input release tag
+        reltag:
+          description: "tag for release, eg v1.0.0_linux"
+          required: true
+          default: "latest" 
+  #trigger when a relaease tag is pushed . disable this later
+  push:
+    tags:
+      - 'v*'       
+          
+permissions:      
+    contents: write
+    pull-requests: write
+    repository-projects: write           
+ 
+  
+
+jobs:
+  build-multi:
+    runs-on: ubuntu-24.04
+    env:
+      TAGNAME: ${{ inputs.reltag }}
+
+    steps:
+      - uses: actions/checkout@v2 #1
+      - uses: actions/setup-python@v3 #2
+        with:
+          python-version: '3.12'
+
+      - name: install dependencies #3
+        run: |
+          sudo apt update
+          #sudo apt install -yq build-essential git pkg-config python3-dev python3-venv \
+          #libgirepository1.0-dev libcairo2-dev \
+          #gir1.2-webkit2-4.0 libcanberra-gtk3-module libgl1 libglib2.0-0
+          sudo apt install -yq git build-essential pkg-config python3-dev python3-venv qt6-base-dev 
+          python -m pip install briefcase        
+      - name: Build linux arifacts #4
+        run: |
+          # briefcase build                    #not needed
+          briefcase package                    #this creates .deb file on ubuntu
+          # briefcase package linux appimage   #appimage created on lowest version 22.04
+            
+
+      - uses: actions/upload-artifact@v4 #5
+        with:
+          name: linuxartifacts 
+          path: "./dist/"
+
+      - uses: marvinpinto/action-automatic-releases@latest # {{xyz}}varaibles not available in uses
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"          
+          automatic_release_tag:  "v0.5.0Beta2"  #"${{ inputs.reltag }}" 
+          prerelease: false
+          title: "Build v0.5.0Beta2" #${{ github.event.inputs.reltag }}" #same as inputs.reltag 
+          files: |                
+            ./dist/*.deb
+     
+          
+
+          

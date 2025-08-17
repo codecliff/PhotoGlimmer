@@ -1,4 +1,3 @@
-
 # import backend
 import os
 import photoglimmer.photoglimmer_backend as backend
@@ -14,8 +13,8 @@ class  UIHelper:
 
 
     def  convert_and_copy_to_clipboard(self, bgra_image):
-            from PySide2.QtGui import QImage, QPixmap,QClipboard
-            from PySide2.QtWidgets import QApplication
+            from PySide6.QtGui import QImage, QPixmap,QClipboard
+            from PySide6.QtWidgets import QApplication
             rgba_image = backend.cv2.cvtColor(bgra_image, backend.cv2.COLOR_BGRA2RGBA)
             height, width, channels = rgba_image.shape
             bytes_per_line = channels * width 
@@ -23,7 +22,7 @@ class  UIHelper:
                             QImage.Format_RGBA8888)
             clipboard = QApplication.clipboard()
             clipboard.setPixmap(QPixmap(qimage), QClipboard.Clipboard) 
-            return 
+            return
 
 
     def  transparency_to_clipboard( self, tempdirpath,originalImgPath):
