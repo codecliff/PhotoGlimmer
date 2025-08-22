@@ -1,7 +1,7 @@
-name: LinuxRelease
+name: LinuxRelease2204
 
 # Creates a Linux Installer using beeware-briefcase and github actions
-# Generates .deb file and appimage for Python 3.10 using Ubuntu 22.04
+# Generates .deb file and appimage using for Ubuntu 22.04 
 # Author: Rahul Singh
 # https://github.com/codecliff/PhotoGlimmer
 # Runs manually, will prompt for release tag

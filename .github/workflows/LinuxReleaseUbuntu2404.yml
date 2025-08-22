@@ -9,7 +9,7 @@ name: LinuxReleaseUbuntu2404
 
 on:
   #push:
-  #  branches: [ feature/pr-pyside6 ] 
+  #  branches: [ master ] 
   #pull_request:
   #  branches: [ master ]
   workflow_dispatch:
@@ -19,9 +19,9 @@ on:
           required: true
           default: "latest" 
   #trigger when a relaease tag is pushed . disable this later
-  push:
-    tags:
-      - 'v*'       
+  #push:
+  #  tags:
+  #    - 'v*'       
           
 permissions:      
     contents: write
@@ -45,9 +45,6 @@ jobs:
       - name: install dependencies #3
         run: |
           sudo apt update
-          #sudo apt install -yq build-essential git pkg-config python3-dev python3-venv \
-          #libgirepository1.0-dev libcairo2-dev \
-          #gir1.2-webkit2-4.0 libcanberra-gtk3-module libgl1 libglib2.0-0
           sudo apt install -yq git build-essential pkg-config python3-dev python3-venv qt6-base-dev 
           python -m pip install briefcase        
       - name: Build linux arifacts #4
@@ -65,9 +62,9 @@ jobs:
       - uses: marvinpinto/action-automatic-releases@latest # {{xyz}}varaibles not available in uses
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"          
-          automatic_release_tag:  "v0.5.0Beta2"  #"${{ inputs.reltag }}" 
+          automatic_release_tag: "${{ inputs.reltag }}"  # "v0.5.0Beta2"  
           prerelease: false
-          title: "Build v0.5.0Beta2" #${{ github.event.inputs.reltag }}" #same as inputs.reltag 
+          title: "Build ${{ github.event.inputs.reltag }}" #same as inputs.reltag 
           files: |                
             ./dist/*.deb
      

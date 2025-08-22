@@ -1,7 +1,7 @@
-name: LinuxRelease
+name: LinuxRelease2004
 
 # Creates a Linux Installer using beeware-briefcase and github actions
-# Generates bot Appimage and .deb files
+# Generates both Appimage and .deb file for Ubuntu 20.04
 # Author: Rahul Singh
 # https://github.com/codecliff/PhotoGlimmer
 # Runs manually, will prompt for release tag
