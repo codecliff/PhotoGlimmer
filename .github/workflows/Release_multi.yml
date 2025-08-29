@@ -95,10 +95,11 @@ jobs:
           ${{ matrix.briefcase-build-prefix }} \
           briefcase build \
             ${{ matrix.platform || matrix.target }} \
-            ${{ matrix.output-format }} \
-            --test --no-input --log \
-            ${{ matrix.briefcase-args }} \
-            ${{ matrix.briefcase-build-args }}
+            ${{ matrix.output-format }} 
+            # \
+            # --test --no-input --log \
+            # ${{ matrix.briefcase-args }} \
+            # ${{ matrix.briefcase-build-args }}
 
       # - name: Test App
       #   run: |
@@ -120,6 +121,16 @@ jobs:
             ${{ matrix.briefcase-args }} \
             ${{ matrix.briefcase-package-args }}
 
+      - name: Build and Package AppImage
+        # This step only runs on the ubuntu-22.04 job.
+        if: matrix.os == 'ubuntu-22.04'
+        run: |
+          briefcase create linux appimage
+          briefcase build linux appimage
+          briefcase package linux appimage #--no-docker
+     
+
+       
       - name: Upload App
         # Briefcase cannot create iOS artefacts; instead, apps
         # must be packaged and published for iOS through Xcode.
@@ -129,6 +140,14 @@ jobs:
           name: App-${{ matrix.target }}
           path: dist
           if-no-files-found: error
+
+      - name: Upload AppImage Artifact
+        # This step only runs on the ubuntu-22.04 job.
+        if: matrix.os == 'ubuntu-22.04'
+        uses: actions/upload-artifact@v4
+        with:
+          name: PhotoGlimmer-AppImage-${{ matrix.os }}
+          path: linux/*.AppImage     
 
       - name: Upload Log
         if: failure()
