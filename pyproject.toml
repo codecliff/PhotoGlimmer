@@ -142,6 +142,7 @@ linuxdeploy_plugins = [
 flatpak_runtime = "org.kde.Platform"
 flatpak_runtime_version = "6.9"
 flatpak_sdk = "org.kde.Sdk"
+finish_arg."filesystem=home" = true
 
 [tool.briefcase.app.photoglimmer.windows]
 requires = [
