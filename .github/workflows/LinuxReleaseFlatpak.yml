@@ -48,8 +48,8 @@ jobs:
           python -m pip install briefcase        
       - name: Build linux arifacts #4
         run: |
-          briefcase build  flatpak                    
-          briefcase package flatpak                  #creates .flatpak file
+          briefcase build linux flatpak                    
+          briefcase package linux flatpak                  #creates .flatpak file
           
             
 
