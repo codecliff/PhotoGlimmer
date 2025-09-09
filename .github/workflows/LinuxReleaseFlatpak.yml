@@ -30,7 +30,7 @@ permissions:
   
 
 jobs:
-  build-multi:
+  build-flatpak:
     runs-on: ubuntu-24.04
     env:
       TAGNAME: ${{ inputs.reltag }}
