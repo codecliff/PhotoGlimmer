@@ -47,8 +47,8 @@ jobs:
       - name: Build linux arifacts #4
         run: |
           briefcase build
-          briefcase package linux appimage   #this creates appimage file 
-          briefcase package                  #this creates .deb file on ubuntu  
+          # briefcase package linux appimage #create appimage separately  
+          briefcase package                  #creates .deb file on ubuntu  
 
       - uses: actions/upload-artifact@v4 #5
         with:

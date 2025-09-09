@@ -1,8 +1,7 @@
-name: LinuxReleaseUbuntu2404
+name: LinuxReleaseFlatpak
 
 # Creates a Linux Installer using beeware-briefcase and github actions
-# Generates .deb file an  Python 3.12 and Ubuntu 24.04
-# We are using this separate workflow instead of building on docker in 22.04 
+# Generates a Flatpak  isntaller an  Python 3.12 and Ubuntu 24.04
 # Author: Rahul Singh
 # https://github.com/codecliff/PhotoGlimmer
 # Runs manually, will prompt for release tag
@@ -49,8 +48,8 @@ jobs:
           python -m pip install briefcase        
       - name: Build linux arifacts #4
         run: |
-          # briefcase build                    #not needed unless also performing testing 
-          briefcase package                    #this creates .deb file on ubuntu
+          briefcase build  flatpak                    
+          briefcase package flatpak                  #creates .flatpak file
           
             
 
@@ -66,7 +65,8 @@ jobs:
           prerelease: false
           title: "Build ${{ github.event.inputs.reltag }}" #same as inputs.reltag 
           files: |                
-            ./dist/*.deb
+            ./dist/*.flatpak
+            
      
           
 
