@@ -1,0 +1,624 @@
+/* =======================================================
+   GLOBAL STYLES
+   ======================================================= */
+QMainWindow, QWidget {
+    background-color: @bg_primary;
+    color: @text_primary;
+    font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+    font-size: 13px;
+}
+
+/*  ==  pointless to  try  styling chekcbox in qss. only svg works reliably == */
+
+/* 
+QCheckBox::indicator {   Box 
+
+    border: 1px solid @text_secondary;  
+    }   = 
+*/
+
+
+
+/* =======================================================
+   SIDEBAR & PANELS
+
+   Note: #CollapsibleHeader > QLabel targets only the immediate children.
+   ======================================================= */
+/* Targeting by ObjectName (We set names in Python) */
+#Sidebar, #PropertyPanel {
+    background-color: @bg_secondary;
+    border-right: 1px solid @border; 
+    border-left:  @border; 
+}
+
+/* Lists (Layers) */
+QListWidget {
+    background-color: @bg_secondary;
+    border-left: 3px solid @border;
+    outline: none;
+}
+
+QListWidget::item {
+    padding: 5px;
+    margin: 2px;
+    border-radius: 4px;
+    color: @text_primary;
+}
+
+QListWidget::item:selected {
+    background-color: @accent;
+    color: white;
+}
+
+QListWidget::item:hover {
+    background-color: @accent_hover;
+}
+
+
+
+#MaskPreview{
+
+    background-color: @bg_secondary;
+    border-left: 3px solid @border;
+    outline: none;
+
+}
+
+#SidebTitle{
+    background-color: @bg_secondary;
+    color: @accent;    
+    /* border-left: 3px solid @accent;
+    border-right: 3px solid @accent; */
+    border-bottom: 1px solid @accent;
+    font-weight:bold;
+    font-size:14px;
+
+    margin:5px;
+   
+}
+
+/* =======================================================
+   TOOLBARS
+   ======================================================= */
+QToolBar {
+    background-color: @bg_secondary;
+    border-bottom: 1px solid @border;
+    padding: 5px;
+    spacing: 5px;
+}
+
+QToolButton {
+    background-color: transparent;
+    border-radius: 4px;
+    padding: 4px;
+    color: @text_primary;
+}
+
+QToolButton:hover {
+    background-color: @bg_tertiary;
+}
+
+QToolButton:checked {
+    background-color: @accent;
+    color: white;
+}
+
+
+
+/* =======================================================
+   BUTTONS
+   ======================================================= */
+QPushButton {
+    background-color: @bg_tertiary;
+    border: 1px solid @border;
+    border-radius: 4px;
+    padding: 6px 12px;
+    color: @text_primary;
+}
+
+QPushButton:hover {
+    background-color: @accent;
+    border-color: @accent;
+    color: white;
+}
+
+QPushButton:pressed {
+    background-color: @accent_hover;
+}
+
+QPushButton:disabled {
+    background-color: @bg_secondary;
+    color: @text_disabled;
+    border-color: @bg_secondary;
+}
+
+/* =======================================================
+   SLIDERS
+   ======================================================= */
+QSlider::groove:horizontal {
+    /* border: 1px solid @bg_tertiary; */
+    height: 2px;
+    background: @bg_tertiary;
+    /* margin: 2px 0; */
+    border-radius: 1px;
+}
+
+QSlider::handle:horizontal {
+    background: @accent; /* Previously #6D8196 or similar */
+    border: 1px solid @accent;
+    width: 12px;
+    height: 12px;
+    margin: -6px 0;
+    border-radius: 6px;
+}
+
+QSlider::handle:horizontal:hover {
+    background: @accent_hover;
+    border-color: white;
+}
+
+QSlider::sub-page:horizontal {
+    background: @accent; 
+    border-radius: 2px;
+    
+}
+
+
+/* =======================================================
+   PRIMARY ACTION BUTTON (Import)
+   ======================================================= */
+#BtnToolbarImport {
+    background-color: @accent;       /* Solid Blue/Accent Background */
+    color: white;                    /* White Text/Icon */    
+     
+    border: 1px solid @accent;
+    border-radius: 4px;               Slight rounding 
+    
+    padding: 0px 12px;               /* Wider padding to look important */
+    font-weight: bold;
+    margin-right: 5px;               /* Space it out from Export */
+}
+
+#BtnToolbarImport:hover {
+    background-color: @accent_hover; /* Slightly brighter/darker on hover */
+    border-color: white;             /* feedback border */
+}
+
+#BtnToolbarImport:pressed {
+    background-color: @bg_tertiary;  /* Dark press state */
+    color: @text_secondary;
+    border-color: @border;
+}
+
+
+
+/* =======================================================
+   CUSTOM WIDGETS (Toolbar)
+   ======================================================= */
+/* The Mask "Capsule" in the Toolbar */
+
+#MaskGroup {
+    background-color:  @bg_tertiary;
+    border: 4px solid  @border; 
+    border-radius: 6px; 
+    margin-left:10px;    
+    
+}
+
+#MaskGroup:disabled {
+    background-color: transparent; /* Fade into background */
+    border: 1px solid transparent;
+    opacity: 0.3;
+}
+
+#MaskGroup > QToolButton:disabled {
+    background-color: transparent; /* Fade into background */
+    
+}
+
+#MaskGroup > QLabel{
+    background-color:  @bg_tertiary;  
+
+} 
+
+#MaskGroup > QSlider{
+    margin-left:5px;
+    margin-right:5px;
+    background-color:  @bg_tertiary ;
+
+         
+}
+
+
+
+
+
+/* =======================================================
+   PROPERTY PANEL SPECIFIC (Collapsible Boxes)
+   ======================================================= */
+
+/* The Scroll Container */
+#PropertiesContainer {
+    background-color: @bg_primary;
+    border: 1px solid @border;
+}
+
+/* The Collapsible Header Button */
+#CollapsibleHeader {
+    
+    background-color: @bg_tertiary; 
+   
+    color: @text_primary ;
+    font-weight: bold;
+    font-size: 11px;
+    text-align: left;
+    
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom: 1px solid @border; 
+}
+
+#CollapsibleHeader:hover {
+    background-color: @accent; 
+    color: white;
+}
+
+
+#CollapsibleHeader:checked {
+    background-color: @bg_tertiary; /* Keep dark when open */
+    border-bottom: 1px solid @accent;  /* Subtle highlight line */
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+#CollapsibleHeader > QLabel{
+    background:transparent;
+    color: @text_primary;
+    font-weight: bold;
+    font-size: 11px;
+    text-align: left;
+} 
+
+
+
+
+
+/* The Collapsible Content Area */
+#CollapsibleContent {
+    background-color: @bg_primary; 
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    color: @text_primary;
+    font-size: 11px;
+}
+
+/* Specific Labels inside Property Panel */
+#CollapsibleContent QLabel {
+    color: @text_secondary;
+    background: transparent;
+}
+
+
+
+
+/* =======================================================
+   CUSTOM DIALOGS (Frameless)
+   ======================================================= */
+/* The Outer Container */
+#CustomDialog {
+    background-color: @bg_secondary;
+    border: 1px solid @border;
+    border-radius: 6px;
+}
+
+/* The New Header Bar */
+#DialogTitleBar {
+    background-color: @accent; 
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    border-bottom: none;
+}
+
+#DialogTitleText {
+    color: white; /* Always white on accent color */
+    font-weight: bold;
+    font-size: 13px;
+    background-color: transparent;
+}
+
+#DialogCloseBtn {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.7);
+    border: none;
+    font-weight: bold;
+}
+#DialogCloseBtn:hover {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+}
+
+/* The Body Area */
+#DialogContent {
+    background-color: @bg_secondary;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+/* The Text Message */
+#DialogMessage {
+    color: @text_primary;
+    font-size: 14px;
+    font-weight: 500;
+    background-color: transparent; /* Fixes the text background issue */
+}
+
+/* Primary Action (OK/Confirm) */
+#BtnDialogOK {
+    background-color: @accent;
+    color: white;
+    border: none;
+    font-weight: bold;
+    padding: 8px 16px;
+    border-radius: 4px;
+}
+
+#BtnDialogOK:hover {
+    background-color: @accent_hover;
+}
+
+/* Secondary Action (Cancel) */
+#BtnDialogCancel {
+    background-color: @bg_tertiary;
+    color: @text_secondary;
+    border: 1px solid @border;
+    border-radius: 4px;
+    padding: 8px 16px;
+}
+
+#BtnDialogCancel:hover {
+    background-color: @bg_primary;
+    color: @text_primary;
+}
+
+
+/* =======================================================
+   LOADING OVERLAY
+   ======================================================= */
+#LoadingOverlay {
+    /* Slightly dark background so text is readable over any image */
+    /* Change to 'transparent' if you want zero darkening */
+    background-color: rgba(0, 0, 0, 150); 
+}
+
+#LoadingText {
+    color: white; /* Always white for visibility */
+    font-size: 16px;
+    font-weight: bold;
+    background: transparent;
+}
+
+#LoadingSpinner {
+    background: transparent;
+}
+
+
+/* =======================================================
+   DISABLED STATES (Visual Feedback)
+   ======================================================= */
+
+/* 1. Gray out the Header Button */
+#CollapsibleHeader:disabled {
+    background-color: @bg_secondary; /* Blend with background */
+    color: @text_disabled;
+    border-bottom: 1px solid @bg_tertiary; 
+}
+
+
+
+
+
+
+/* 2. Dim the Content Area */
+#CollapsibleContent:disabled {
+    background-color: @bg_secondary; /* Remove the distinct background */
+    opacity: 0.5; /* Note: Qt 5/6 doesn't fully support opacity on containers, 
+                     so we rely on color changes below */
+}
+
+/* 3. Gray out Labels inside disabled panels */
+#CollapsibleContent:disabled > QLabel {
+    color: @text_disabled;
+}
+
+/* 4. Gray out Sliders */
+QSlider::groove:horizontal:disabled {
+    background-color: @bg_tertiary;
+    border-color: @bg_tertiary;
+}
+
+QSlider::handle:horizontal:disabled {
+    background-color: @text_disabled;
+    border-color: @text_disabled;
+}
+
+QSlider::sub-page:horizontal:disabled {
+    background-color: @text_disabled;
+}
+
+
+/* =======================================================
+   MINIMALIST SCROLLBARS
+   ======================================================= */
+
+QScrollBar:vertical {
+    border: none;
+    background: @bg_secondary; /* Matches container background */
+    width: 10px;               /* Thin by default */
+    margin: 0px 0px 0px 0px;
+}
+
+QScrollBar::handle:vertical {
+    background: @scrollbar_handle; /* Use the variable we defined */
+    min-height: 20px;
+    border-radius: 5px;        /* Rounded pill shape */
+    margin: 2px;               /* Creates 'floating' look */
+}
+
+QScrollBar::handle:vertical:hover {
+    background: @text_secondary; /* Brighter on hover */
+}
+
+/* Hide the up/down arrows completely */
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    border: none;
+    background: none;
+    height: 0px;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+    background: none;
+}
+
+/* Horizontal Version (Same logic) */
+QScrollBar:horizontal {
+    border: none;
+    background: @bg_secondary;
+    height: 10px;
+    margin: 0px 0px 0px 0px;
+}
+
+QScrollBar::handle:horizontal {
+    background: @scrollbar_handle;
+    min-width: 20px;
+    border-radius: 5px;
+    margin: 2px;
+}
+
+QScrollBar::handle:horizontal:hover {
+    background: @text_secondary;
+}
+
+QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+    border: none;
+    background: none;
+    width: 0px;
+}
+
+QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+    background: none;
+}
+
+/* Corner where scrollbars meet */
+QAbstractScrollArea::corner {
+    background: @bg_secondary;
+    border: none;
+}
+
+/* =======================================================
+   MENUS & MENU BAR
+   ======================================================= */
+
+/* The Horizontal Bar at the top */
+QMenuBar {
+    background-color: @bg_primary; /* Blends with title bar */
+    color: @text_primary;
+    border-bottom: 1px solid @border;
+    padding: 2px;
+}
+
+QMenuBar::item {
+    background-color: transparent;
+    padding: 6px 10px;
+    border-radius: 4px;
+    margin-right: 2px;
+}
+
+QMenuBar::item:selected { 
+    /* "selected" in MenuBar means "Hovered" or "Open" */
+    background-color: @bg_tertiary; 
+    color: @text_primary;
+}
+
+/* The Dropdown Menu (The part that was invisible) */
+QMenu {
+    /* ELEVATION: Use secondary/tertiary bg to stand out from canvas */
+    background-color: @bg_secondary; 
+    
+    /* DEFINITION: Essential for seeing the menu edges */
+    border: 1px solid @border; 
+    
+    /* Padding inside the dropdown box */
+    padding: 5px 0px; 
+    
+    /* Rounding corners helps it look like a floating card */
+    border-radius: 6px; 
+}
+
+/* The Individual Actions inside the dropdown */
+QMenu::item {
+    padding: 6px 20px 6px 20px; /* Top Right Bottom Left */
+    margin: 1px 4px; /* Small gap on sides for rounded look */
+    border-radius: 4px;
+    color: @text_primary;
+}
+
+/* Hover Effect inside Dropdown */
+QMenu::item:selected {
+    background-color: @accent; /* The Blue Highlight */
+    color: white;
+}
+
+/* Disabled Items */
+QMenu::item:disabled {
+    color: @text_secondary;
+    background-color: transparent;
+}
+
+/* Separator Lines (e.g. between "Open" and "Exit") */
+QMenu::separator {
+    height: 1px;
+    background-color: @border;
+    margin: 4px 6px; /* Indent the line slightly */
+}
+
+
+
+/************  canvas ******************/
+#CentralCanvas{
+
+    background-color: @bg_tertiary;
+}
+
+
+
+#linkButton  { border:none; background: transparent; padding-right:10px }
+#linkButton:hover {  background: @accent_hover;  }  
+
+
+/********* Help Dialogue ***********/
+
+/* --- Help Dialog Specifics --- */
+
+#HelpDialog {
+    /* Ensures the window background behind the widgets is dark 
+       (Prevents white flashes during resize) */
+    background-color: @bg_secondary;
+    color:@text_primary; 
+}
+
+/* Optional: Make the Close button at the bottom look prominent */
+#HelpDialog QPushButton[text="Close"] {
+    background-color: @accent;
+    color: #e0e0e0;
+    padding: 6px 20px;
+    border-radius: 4px;
+}
+
+#HelpDialog QPushButton[text="Close"]:hover {
+    background-color: @accent_hover;
+}
+
+
+
+
