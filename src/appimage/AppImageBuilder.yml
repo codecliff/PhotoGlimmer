@@ -14,7 +14,7 @@ script:
   - cp resources/photoglimmer.png  AppDir/usr/share/icons/hicolor/256x256/apps/photoglimmer.png
 
   - |
-      ./appimage_venv/bin/python3 -m pip install \
+      ./venv/bin/python3.12 -m pip install \
         --no-cache-dir \
         --upgrade \
         --force-reinstall \
