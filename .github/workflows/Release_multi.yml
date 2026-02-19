@@ -63,7 +63,8 @@ jobs:
           export APP_VERSION=${{ github.event.inputs.release_version }}
           python -m venv venv
           source venv/bin/activate
-          pip install appimage-builder packaging==20.9
+          pip install packaging==20.9 
+          pip install appimage-builder 
           appimage-builder --recipe AppImageBuilder.yml
 
       - name: Upload AppImage Artifact
