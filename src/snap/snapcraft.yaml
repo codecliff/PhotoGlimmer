@@ -1,37 +1,31 @@
-# src/snap/snapcraft.yml , src/photoglimmer/all_the_python_code
-#run : cd src/ ; snapcraft pack  
-# 
 name: photoglimmer
 title: PhotoGlimmer
-version: '0.9.6'
+version: '0.9.6' # Hardcoded 
 summary: AI-powered lighting enhancement for people in photos
 description: |
   PhotoGlimmer is a fully offline, lightweight, AI powered image editor 
   that allows you to enhance people and  backgrounds separately. 
   It is  fully contained,  and does not require a GPU. 
-  Provides a simple slider-based interface for editing images.
+  Provides simple rectangular selection abd  slider-based interface for editing images.
   Download size may be large (~500 MBs) due to its fullly-containerized nature.
 type: app
 contact: 
   - mailto:8oaf978oh@mozmail.com  
   - https://github.com/codecliff/PhotoGlimmer
 website: https://codecliff.github.io/photoglimmer/
-
-
 issues: https://github.com/codecliff/PhotoGlimmer/issues
-
+type: app
 base: core24 
 confinement: strict
 grade: stable
 
-icon: snap/gui/photoglimmer.png # Used for the Snap Store
+# Note: Paths are relative to the project root (src/)
+icon: snap/gui/photoglimmer.png
 
 apps:
   photoglimmer:
     command: bin/python3 -m photoglimmer
     extensions: [gnome]
-    # Note: 'desktop:' key is removed because Snapcraft auto-discovers 
-    # snap/gui/photoglimmer.desktop if it matches the app name.
     plugs: [x11, wayland, opengl, home, desktop, removable-media]
 
   safe-mode:
@@ -42,10 +36,10 @@ apps:
     plugs: [x11, wayland, opengl, home, desktop, removable-media]
 
 parts:
-  # Part 1: Install 3rd-party dependencies from requirements.txt
+  # Part 1: Install 3rd-party dependencies
   photoglimmer-deps:
     plugin: python
-    source: .
+    source: . # Looking for requirements.txt in src/
     python-requirements:
       - requirements.txt
     stage-packages:
@@ -53,30 +47,22 @@ parts:
       - libglib2.0-0
       - libfontconfig1
       - libxkbcommon-x11-0
-      - libxcb-cursor0 # Required for Qt6/PySide6 on core24
+      - libxcb-cursor0 
     build-packages:
       - build-essential
       - libgl1-mesa-dev
 
-  # Part 2: Explicitly copy your local source code into the Snap
+  # Part 2: Copy source code
   photoglimmer-src:
     plugin: dump
-    source: .
-    override-pull: |
-      craftctl default
-      # Relative to pwd
-      VERSION=$(sed -n 's/^APP_VERSION.*=.*["'\'']\([^"'\'']*\)["'\''].*/\1/p' photoglimmer/backend/Interfaces.py)
-      craftctl set version=$VERSION
+    source: . # Looking for photoglimmer/ folder in src/
     organize:
-      # Moves your local 'photoglimmer' folder into the site-packages path
       photoglimmer: lib/python3.12/site-packages/photoglimmer
     prime:
       - lib/python3.12/site-packages/photoglimmer/*
 
 environment:
-  # PYTHONPATH now points specifically to where we merged deps and source
   PYTHONPATH: $SNAP/lib/python3.12/site-packages
-  # Standardizing the locale for UTF-8 symbol support
+  # Standardizing locale for UTF-8 symbol support
   LANG: C.UTF-8
   LC_ALL: C.UTF-8
-  
