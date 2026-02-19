@@ -1,157 +1,100 @@
-name: ReleaseMulti
-
-# Note - EXPERIMENTAL WORKFLOW. NOT USED FOR ANY RELEASES. USE OS-SPECIFIC WORKFLOWS
-# Concurrent creation of Installers  using beeware-briefcase and github actions
-# Generates installers for multiple versions
-# Base on official recommendation from beeware project
-# https://briefcase.readthedocs.io/en/latest/how-to/ci.html
-# Author: Rahul Singh
-# https://github.com/codecliff/PhotoGlimmer
-# Runs manually, will prompt for release tag
-
+name: snap_appimage_096
 on:
-  #push:
-  #  branches: [ master ] 
-  #pull_request:
-  #  branches: [ master ]
   workflow_dispatch:
-      inputs: #when run, ask user to input release tag
-        reltag:
-          description: "tag for release, eg v1.0.0_linux"
-          required: true
-          default: "latest" 
-  #trigger when a relaease tag is pushed . disable this later
-  #push:
-  #  tags:
-  #    - 'v*'  
-
-permissions:  # not in briefcase official     
-    contents: write
-    pull-requests: write
-    repository-projects: write           
-
-
-# Cancel active CI runs for a PR before starting another run
-concurrency:
-  group: ${{ github.workflow}}-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
-
-env:
-  FORCE_COLOR: "1"
-
-defaults:
-  run:
-    shell: bash
+    inputs:
+      release_type:
+        description: 'Type of release'
+        required: true
+        default: 'beta'
+        type: choice
+        options:
+          - beta
+          - stable
 
 jobs:
-  ci:
-    name: Test and Package
-    runs-on: ${{ matrix.runs-on }}
-    strategy:
-      fail-fast: false
-      matrix:
-        target: [ "Ubuntu-22.04", "Ubuntu-24.04"]
-        include:
-         
-          - target: "Ubuntu-22.04"
-            platform: "Linux"
-            output-format: "system"
-            runs-on: "ubuntu-latest"
-            pre-command: "sudo apt -y install socat"
-            briefcase-run-prefix: "xvfb-run"
-            briefcase-args: "--target ubuntu:22.04"
-
-          - target: "Ubuntu-24.04"
-            platform: "Linux"
-            output-format: "system"
-            runs-on: "ubuntu-latest"
-            pre-command: "sudo apt -y install socat"
-            briefcase-run-prefix: "xvfb-run"
-            briefcase-args: "--target ubuntu:24.04"
-
-         
-
+  # 1. VERSION EXTRACTION
+  get-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.extract.outputs.version }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - id: extract
+        run: |
+          # Use the robust sed logic to pull version from Interfaces.py
+          V=$(sed -n 's/^APP_VERSION.*=.*["'\'']\([^"'\'']*\)["'\''].*/\1/p' src/photoglimmer/backend/Interfaces.py)
+          echo "version=$V" >> $GITHUB_OUTPUT
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
+  # 2. SNAP BUILD
+  build-snap:
+    needs: get-version
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Snap
+        uses: snapcore/action-build@v1
         with:
-          python-version: "3.12"  # update with your targeted Python version
+          path: src/ # Runs from src/ 
+          snapcraft-args: pack --destructive-mode
+      - uses: actions/upload-artifact@v4
+        with:
+          name: photoglimmer-snap
+          path: src/*.snap
 
-      - name: Install Briefcase
+  # 3. APPIMAGE BUILD
+  build-appimage:
+    needs: get-version
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.12.3
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.3'
+      - name: Install System Dependencies
         run: |
-          python -m pip install -U pip setuptools wheel
-          python -m pip install briefcase
+          sudo apt-get update
+          sudo apt-get install -y desktop-file-utils libgdk-pixbuf2.0-dev
+      - name: Build AppImage
+        working-directory: src/appimage
+        run: |
+          # Inject version into environment for the recipe
+          export APP_VERSION=${{ needs.get-version.outputs.version }}
+          python -m venv appimage_venv
+          source appimage_venv/bin/activate
+          pip install appimage-builder packaging==20.9
+          appimage-builder --recipe AppImageBuilder.yml
+      - uses: actions/upload-artifact@v4
+        with:
+          name: photoglimmer-appimage
+          path: src/appimage/*.AppImage
 
-      - name: Setup Environment
-        run: |
+  # 4. UNIFIED RELEASE
+  create-release:
+    needs: [get-version, build-snap, build-appimage]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Mandatory for creating releases
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./release-artifacts
+          merge-multiple: true # Flattens Snap and AppImage into one folder
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          # Uses the version  extracted in Job 1 as the Tag
+          tag_name: v${{ needs.get-version.outputs.version }}
+          name: PhotoGlimmer v${{ needs.get-version.outputs.version }} (${{ github.event.inputs.release_type }})
+          body: |
+            Automated build for PhotoGlimmer version ${{ needs.get-version.outputs.version }}.
+            Type: ${{ github.event.inputs.release_type }}
+          draft: false
+          prerelease: ${{ github.event.inputs.release_type == 'beta' }}
+          files: |
+            ./release-artifacts/*.snap
+            ./release-artifacts/*.AppImage
+          generate_release_notes: true
           
-          ${{ matrix.pre-command }}
-
-      - name: Build App
-        run: |
-          ${{ matrix.briefcase-build-prefix }} \
-          briefcase build \
-            ${{ matrix.platform || matrix.target }} \
-            ${{ matrix.output-format }} 
-            # \
-            # --test --no-input --log \
-            # ${{ matrix.briefcase-args }} \
-            # ${{ matrix.briefcase-build-args }}
-
-      # - name: Test App
-      #   run: |
-      #     ${{ matrix.briefcase-run-prefix }} \
-      #     briefcase run \
-      #       ${{ matrix.platform || matrix.target }} \
-      #       ${{ matrix.output-format }} \
-      #       --test --no-input --log \
-      #       ${{ matrix.briefcase-args }} \
-      #       ${{ matrix.briefcase-run-args }}
-
-      - name: Package App
-        run: |
-          ${{ matrix.briefcase-package-prefix }} \
-          briefcase package \
-            ${{ matrix.platform || matrix.target }} \
-            ${{ matrix.output-format }} \
-            --update --adhoc-sign --no-input --log \
-            ${{ matrix.briefcase-args }} \
-            ${{ matrix.briefcase-package-args }}
-
-      - name: Build and Package AppImage
-        # This step only runs on the ubuntu-22.04 job.
-        if: matrix.os == 'ubuntu-22.04'
-        run: |
-          briefcase create linux appimage
-          briefcase build linux appimage
-          briefcase package linux appimage #--no-docker
-     
-
-       
-      - name: Upload App
-        # Briefcase cannot create iOS artefacts; instead, apps
-        # must be packaged and published for iOS through Xcode.
-        if: matrix.target != 'iOS'
-        uses: actions/upload-artifact@v4
-        with:
-          name: App-${{ matrix.target }}
-          path: dist
-          if-no-files-found: error
-
-      - name: Upload AppImage Artifact
-        # This step only runs on the ubuntu-22.04 job.
-        if: matrix.os == 'ubuntu-22.04'
-        uses: actions/upload-artifact@v4
-        with:
-          name: PhotoGlimmer-AppImage-${{ matrix.os }}
-          path: linux/*.AppImage     
-
-      - name: Upload Log
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: Log-Failure-${{ matrix.target }}
-          path: logs/*
