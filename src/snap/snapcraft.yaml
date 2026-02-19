@@ -3,7 +3,7 @@
 # 
 name: photoglimmer
 title: PhotoGlimmer
-#version: '0.0.1'
+version: '0.9.6'
 summary: AI-powered lighting enhancement for people in photos
 description: |
   PhotoGlimmer is a fully offline, lightweight, AI powered image editor 
