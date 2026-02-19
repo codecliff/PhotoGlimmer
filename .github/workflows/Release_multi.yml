@@ -1,7 +1,12 @@
 name: snap_appimage_096
+
 on:
   workflow_dispatch:
     inputs:
+      release_version:
+        description: 'Version Number- tag only (e.g., 0.9.6)'
+        required: true
+        default: '0.9.6'
       release_type:
         description: 'Type of release'
         required: true
@@ -12,84 +17,81 @@ on:
           - stable
 
 jobs:
-  # 1. VERSION EXTRACTION
-  get-version:
-    runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.extract.outputs.version }}
-    steps:
-      - uses: actions/checkout@v4
-      - id: extract
-        run: |
-          # Use the robust sed logic to pull version from Interfaces.py
-          V=$(sed -n 's/^APP_VERSION.*=.*["'\'']\([^"'\'']*\)["'\''].*/\1/p' src/photoglimmer/backend/Interfaces.py)
-          echo "version=$V" >> $GITHUB_OUTPUT
-
-  # 2. SNAP BUILD
+  # 1. SNAP BUILD
   build-snap:
-    needs: get-version
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - name: Build Snap
-        uses: snapcore/action-build@v1
-        with:
-          path: src/ # Runs from src/ 
-          snapcraft-args: pack --destructive-mode
-      - uses: actions/upload-artifact@v4
+
+      - name: Install Snapcraft
+        run: |
+          sudo snap install snapcraft --classic
+
+      - name: Build Snap (Destructive Mode)
+        working-directory: src
+        run: |
+          # We use destructive-mode to avoid LXD/Multipass overhead
+          # We point specifically to the snapcraft.yaml inside the snap/ folder
+          sudo snapcraft pack --destructive-mode --snapcraft-file snap/snapcraft.yaml
+
+      - name: Upload Snap Artifact
+        uses: actions/upload-artifact@v4
         with:
           name: photoglimmer-snap
           path: src/*.snap
 
-  # 3. APPIMAGE BUILD
+  # 2. APPIMAGE BUILD
   build-appimage:
-    needs: get-version
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python 3.12.3
+
+      - name: Set up Python 3.10
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12.3'
+          python-version: '3.10'
+
       - name: Install System Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y desktop-file-utils libgdk-pixbuf2.0-dev
+
       - name: Build AppImage
         working-directory: src/appimage
         run: |
           # Inject version into environment for the recipe
-          export APP_VERSION=${{ needs.get-version.outputs.version }}
-          python -m venv appimage_venv
-          source appimage_venv/bin/activate
+          export APP_VERSION=${{ github.event.inputs.release_version }}
+          python -m venv venv
+          source venv/bin/activate
           pip install appimage-builder packaging==20.9
           appimage-builder --recipe AppImageBuilder.yml
-      - uses: actions/upload-artifact@v4
+
+      - name: Upload AppImage Artifact
+        uses: actions/upload-artifact@v4
         with:
           name: photoglimmer-appimage
           path: src/appimage/*.AppImage
 
-  # 4. UNIFIED RELEASE
+  # 3. UNIFIED RELEASE
   create-release:
-    needs: [get-version, build-snap, build-appimage]
+    needs: [build-snap, build-appimage]
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Mandatory for creating releases
+      contents: write
     steps:
       - name: Download Artifacts
         uses: actions/download-artifact@v4
         with:
           path: ./release-artifacts
-          merge-multiple: true # Flattens Snap and AppImage into one folder
+          merge-multiple: true
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          # Uses the version  extracted in Job 1 as the Tag
-          tag_name: v${{ needs.get-version.outputs.version }}
-          name: PhotoGlimmer v${{ needs.get-version.outputs.version }} (${{ github.event.inputs.release_type }})
+          tag_name: v${{ github.event.inputs.release_version }}
+          name: PhotoGlimmer v${{ github.event.inputs.release_version }} (${{ github.event.inputs.release_type }})
           body: |
-            Automated build for PhotoGlimmer version ${{ needs.get-version.outputs.version }}.
+            Automated build for PhotoGlimmer version ${{ github.event.inputs.release_version }}.
             Type: ${{ github.event.inputs.release_type }}
           draft: false
           prerelease: ${{ github.event.inputs.release_type == 'beta' }}
@@ -97,4 +99,3 @@ jobs:
             ./release-artifacts/*.snap
             ./release-artifacts/*.AppImage
           generate_release_notes: true
-          
