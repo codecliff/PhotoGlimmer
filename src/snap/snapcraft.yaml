@@ -8,7 +8,6 @@ description: |
   It is  fully contained,  and does not require a GPU. 
   Provides simple rectangular selection abd  slider-based interface for editing images.
   Download size may be large (~500 MBs) due to its fullly-containerized nature.
-type: app
 contact: 
   - mailto:8oaf978oh@mozmail.com  
   - https://github.com/codecliff/PhotoGlimmer
