@@ -32,7 +32,7 @@ jobs:
         run: |
           # We use destructive-mode to avoid LXD/Multipass overhead
           # We point specifically to the snapcraft.yaml inside the snap/ folder
-          sudo snapcraft pack --destructive-mode --snapcraft-file snap/snapcraft.yaml
+          sudo snapcraft pack --destructive-mode #--snapcraft-file snap/snapcraft.yaml
 
       - name: Upload Snap Artifact
         uses: actions/upload-artifact@v4
@@ -46,10 +46,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python 3.10
+      - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.12'
 
       - name: Install System Dependencies
         run: |
@@ -62,9 +62,9 @@ jobs:
           # Inject version into environment for the recipe
           export APP_VERSION=${{ github.event.inputs.release_version }}
           python -m venv venv
-          source venv/bin/activate
-          pip install packaging==20.9 
-          pip install appimage-builder 
+          source venv/bin/activate           
+          pip install appimage-builder==1.1.0
+          pip install packaging==20.9
           appimage-builder --recipe AppImageBuilder.yml
 
       - name: Upload AppImage Artifact
