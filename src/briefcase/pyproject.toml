@@ -16,7 +16,7 @@
 
 [tool.briefcase]
 project_name = "PhotoGlimmer"
-bundle = "com.github.photoglimmer"
+bundle = "io.github.codecliff.photoglimmer"
 version = "0.9.6" # Updated to match your current hardcoded version
 url = "https://github.com/codecliff/PhotoGlimmer"
 license.file = "../../LICENSE" # Path adjusted to reach root from src/briefcase/
