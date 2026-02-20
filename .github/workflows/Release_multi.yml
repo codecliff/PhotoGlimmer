@@ -116,7 +116,8 @@ jobs:
         working-directory: src/briefcase
         run: |
           # Briefcase handles the SDK and Runtime download inside the runner
-          briefcase package linux flatpak --no-input
+          briefcase build linux flatpak                    
+          briefcase package linux flatpak
       - name: Upload Flatpak Artifact
         uses: actions/upload-artifact@v4
         with:
