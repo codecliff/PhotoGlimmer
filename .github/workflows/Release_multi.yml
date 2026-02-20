@@ -94,7 +94,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: photoglimmer-msi
-          path: "./dist/*.msi"
+          path: src/briefcase/dist/*.msi
 
   # 4. FLATPAK BUILD 
   build-flatpak:
@@ -122,7 +122,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: photoglimmer-flatpak
-          path: "./dist/*.flatpak"
+          path: src/briefcase/dist/*.flatpak
 
   # 5. UNIFIED RELEASE (UPDATED)
   create-release:
