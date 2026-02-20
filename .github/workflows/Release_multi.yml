@@ -88,7 +88,8 @@ jobs:
         working-directory: src/briefcase
         run: |
           # Create and Package for Windows MSI
-          briefcase package windows msi --no-input
+          briefcase build
+          briefcase package 
       - name: Upload MSI Artifact
         uses: actions/upload-artifact@v4
         with:
