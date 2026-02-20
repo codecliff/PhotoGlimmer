@@ -17,15 +17,14 @@ on:
           - stable
 
 jobs:
-  # 1. SNAP BUILD
+  # 1. SNAP BUILD (UNCHANGED)
   build-snap:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
 
       - name: Install Snapcraft
-        run: |
-          sudo snap install snapcraft --classic
+        run: sudo snap install snapcraft --classic
 
       - name: Build Snap (Destructive Mode)
         working-directory: src
@@ -73,9 +72,59 @@ jobs:
           name: photoglimmer-appimage
           path: src/appimage/*.AppImage
 
-  # 3. UNIFIED RELEASE
+  # 3. WINDOWS MSI BUILD 
+  build-windows-msi:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Briefcase
+        run: |
+          pip install briefcase
+      - name: Package MSI
+        working-directory: src/briefcase
+        run: |
+          # Create and Package for Windows MSI
+          briefcase package windows msi --no-input
+      - name: Upload MSI Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: photoglimmer-msi
+          path: src/briefcase/windows/*.msi
+
+  # 4. FLATPAK BUILD 
+  build-flatpak:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Flatpak Tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y flatpak flatpak-builder
+      - name: Install Briefcase
+        run: |
+          pip install briefcase
+      - name: Package Flatpak
+        working-directory: src/briefcase
+        run: |
+          # Briefcase handles the SDK and Runtime download inside the runner
+          briefcase package linux flatpak --no-input
+      - name: Upload Flatpak Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: photoglimmer-flatpak
+          path: src/briefcase/linux/*.flatpak
+
+  # 5. UNIFIED RELEASE (UPDATED)
   create-release:
-    needs: [build-snap, build-appimage]
+    needs: [build-snap, build-appimage, build-windows-msi, build-flatpak]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -92,11 +141,20 @@ jobs:
           tag_name: v${{ github.event.inputs.release_version }}
           name: PhotoGlimmer v${{ github.event.inputs.release_version }} (${{ github.event.inputs.release_type }})
           body: |
-            Automated build for PhotoGlimmer version ${{ github.event.inputs.release_version }}.
+            Automated multi-platform build for PhotoGlimmer v${{ github.event.inputs.release_version }}.
+            
+            **Available Formats:**
+            * Windows (.msi)
+            * Linux Snap (.snap)
+            * Linux AppImage (.AppImage)
+            * Linux Flatpak (.flatpak)
+            
             Type: ${{ github.event.inputs.release_type }}
           draft: false
           prerelease: ${{ github.event.inputs.release_type == 'beta' }}
           files: |
             ./release-artifacts/*.snap
             ./release-artifacts/*.AppImage
+            ./release-artifacts/*.msi
+            ./release-artifacts/*.flatpak
           generate_release_notes: true
