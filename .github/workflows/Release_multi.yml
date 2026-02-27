@@ -72,7 +72,7 @@ jobs:
   #         name: photoglimmer-appimage
   #         path: src/appimage/*.AppImage
 
-   build-appimage:
+  build-appimage:
     # Remove needs: get-version if your bash script handles it via sed
     runs-on: ubuntu-22.04
     steps:
