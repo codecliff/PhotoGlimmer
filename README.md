@@ -12,24 +12,25 @@
 
 
 
-## ✨✨ :rocket: V 0.5  (September 2025) is here!  :rocket: ✨✨
-        * Multiple enhancements under the hood       
-        * Code Upgrade to Qt6 and Pyside6           
-        * Improvements made to installers  
-        * Flatpak Installer added (Experimental) 
-        Along with all  the features added in 0.4 , like:
-        * Mouse drawn selection to aid or restrict AI human detection          
-        * Preference Dialog 
-        * Choice of start directory
-        * Image Preview in File Open dialog 
-        * Gimp like Curves for brightness tweaking (Experimental / optional :: see preferences )
-        * No-restart preference switching
-        * Help Menu
-        * Online help page with FAQ
-        * Online interactive graphical help page     
+## ✨✨ :rocket: V 0.9.6 (February 2026) is a massive upgrade :rocket: ✨✨
+        * Now select multiple people in the image separately 
+        * Edit each selection box separately         
+        * Multiple new algorithms 
+           * Separately edit Mid-tone/Shadow/Highlights
+           * Face relighting 
+           * Eye enhancement
+           * Smart Skin
+           * And all the tweaks already available 
+           * White Balance, Color Temperature
+        * Manual mask edits to enhance generated selections 
+        * Live preview for slider move
+        * Undo/Redo
+        * Zoom/Pan 
+        * Multiple application themes
+        * Recent Files 
+        * Inbuilt help dialogue
 
 
->  ⚡⚡ New contributor :   [Stephan Schielke](https://github.com/stephanschielke/) ⚡⚡
 
 
 <br/>
@@ -51,7 +52,7 @@
 
 <br/>
 
-For checksums, refer to [release pages](https://github.com/codecliff/PhotoGlimmer/releases)  with tags starting with V0.5.0_ 
+ For checksums, refer to [release pages](https://github.com/codecliff/PhotoGlimmer/releases)  
 
 <br/>
 
@@ -69,6 +70,7 @@ PhotoGlimmer is an image editing application that leverages Artificial Intellige
 
 Therefore, you can brighten all the people in an image while darkening or softening the background, or vice versa.
 
+PhotoGlimmer embeds OpenCV and Google's MediaPipe and works totally offline. 
 
 It can handle large images and does not require a GPU. It's a totally local and offline graphical  application, primarily for Linux Desktops. 
 
@@ -76,7 +78,7 @@ It has evolved from something I had originally written to improve a number of ph
 
 In short, if you are an AI enthusiast photographer, it is the user-friendly segmentation tool you have been thinking of developing yourself for last few years :-) Though it's perfectly useful for an everyday common user like me. 
 
-Beware- Unlike a phone app, PhotoGlimmer gives you full control of the segmentation and illumination process and it's easy to go overboard. But as you will see, it does the work in more than 95% of cases. The only caveat is that the image should not be too cluttered to segregate foreground(people) form the background.
+Beware- Unlike a phone app, PhotoGlimmer gives you full control of the segmentation and illumination process and it's easy to go overboard. But as you will see, it does the work in more than 95% of cases. The only caveat is that the image should not be too cluttered to segregate foreground(people) from the background.
 
 
 # Screenshot
@@ -110,14 +112,15 @@ Beware- Unlike a phone app, PhotoGlimmer gives you full control of the segmentat
 
 - **Seamless toggle between background and foreground **
 
+- **Edit each person seaprately, or in group(s) **
 
-- **Background Preservation**: Say goodbye to painstaking masking and cropping. A few nudges at the sliders ensure that your enhanced foreground blend seamlessly with the original background.
+- **Background Preservation**: 
 
 - **Lean and Intuitive Interface - just some sliders **:  
 
 - **GPU Not Required**:  
 
-- **Large Image Sizes**:  PhotoGlimmer can handle large image dimensions like 6000x4000 megapixels (10-15 MBs) 
+- **Large Image Sizes**:  PhotoGlimmer can handle large image dimensions like 6000x4000 pixels,  upto 50 megapixels, or  10-15 MBs 
 
 - **Local Processing**: Resides completely on your computer.
 
@@ -163,11 +166,15 @@ So, if you are using the .deb or .AppImage version, you need to have only **Pyth
 - You don't need to install anything, appimages have everything and the kitchen sink bundled in.
 - You might need to set the Appimage file as executable 
 
-## Method 2. Install .deb (Ubuntu) : 
+## Method 2. Install .snap (Ubuntu) : 
 
-- This method gives you the better integration with OS. You can just right-click on images and open them in PhotoGlimmer
+- This method gives you the better integration with Ubuntu OS. You can just right-click on images and open them in PhotoGlimmer
 - All requirements are bundled in the installer itself. You don't need to install any requirements
-- Installing through this .deb file does not pollute your system environment.  Photoglimmer and all its required software is contained in its own bundle and do not interfere with versions of stuff already installed on the system 
+- Installing through this file does not pollute your system environment.  Photoglimmer and all its required software is contained in its own bundle and do not interfere with versions of stuff already installed on the system 
+- if you download the .snap file from github, you can install it with the command : `snap install xyz.snap --dangerous` 
+- here substitute xyz with file's actual name 
+- that spooky  looking `--dangerous` just shows you are installing from a file instead of using the software store. 
+- the snap file is generated right inside github form the source code in the `src/photoglimmer` directory. 
 
 
 ## Method 3. Executing from source code (All OSs including Windows) :
@@ -176,40 +183,28 @@ Follow these steps to install dependencies and run PhotoGlimmer :
 
 
 1. Create a python environment , preferably with python 3.10 to 3.12 
-2.  Activate this environment 
+2. Activate this environment 
 3. Install requirements from requirements.txt
 4. Then- 
     * `git clone https://github.com/codecliff/PhotoGlimmer.git`
-    * `cd PhotoGlimmer` 
-    * `python photoglimmer/` **OR** `python photoglimmer/photoglimmer_ui.py `
+    * `cd src ` 
+    * `python -m photoglimmer`
 
 
 
 
-# Using the software (User Guide) : 
-
-## Some Basics: 
-
-- All editing is done with the help of 3 or 4  sliders
-- Hover over each element to know what that element does
-- Result image is previewed on the right, while the current selection mask appears as a small black and white image on left. 
-
-
-
-- **Main Sliders:**
-    +  Brightness and saturation  of selected area can be tweaked with the relevant slider
-    +  **Selection can be grown or shrunk  by using the ``Threshold`` slider**
-    +  **The ``Edge Blur`` slider blends the edited portion smoothly with background
 
     
 ## Process for editing an image: 
 - Open an image in PhotoGlimmer
-- Slide the brightness slider a bit. Apart form showing your edited image, now the application will also show the current section mask 
-- You might need to grow or shrink the selection with ``Threshold`` slider
-- If the edits start looking patchy , increase the ``Edge Blur`` . This will make the edited portion blend seamlessly with its background
-- Press mouse button on the image to compare edit with original image
-- When satisfied , Save the edited Image. 
-- Note- on  ``save``, the processing might take significantly longer than previous edits.This is because previous edits were being made on a scaled-down version of the image. 
+- Draw rectangles around one or more persons. You can draw multiple rectangles.
+- The mask on left will show you the AI has outlined any person(s) in the rectangle 
+- Select the rectangle with person you are interested in, and enhance them using sliders on the right
+- You can also select the bacgroud from the list (left sidebar) 
+- If the edits start looking patchy , increase the `Feathering`` . This will make the edited portion blend seamlessly with its background
+- Press middle mouse button on the image to compare edit with original image
+- When satisfied , Save (Export) the edited Image. 
+- Note- on  ``Export``, the processing might take significantly longer than live edits.This is because live edits were being made on a scaled-down version of the image. 
 
 
 
@@ -220,6 +215,13 @@ Follow these steps to install dependencies and run PhotoGlimmer :
 <hr >
 
 
+#### ✨✨Previous Version (v0.5) Binaries  ✨✨ 
+   [Deb for Ubuntu 22.04 ](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.5.0_U2204/photoglimmer_0.5.0-1.ubuntu-jammy_amd64.deb)
+   [Deb for Ubuntu 24.04 ](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.5.0_U2404/photoglimmer_0.5.0-1.ubuntu-noble_amd64.deb)  
+   [Msi Installer](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.5.0_Win/PhotoGlimmer-0.5.0.msi)
+   [Flatpak for All Linux flavors](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.5.0_Flatpak/PhotoGlimmer-0.5.0-x86_64.flatpak) 
+
+
 #### ✨✨Previous Version (v0.4) Binaries  ✨✨ 
 
   [Appimage for All Linux flavors](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.4.0_linux/PhotoGlimmer-0.4.0-x86_64.AppImage) |
@@ -228,12 +230,6 @@ Follow these steps to install dependencies and run PhotoGlimmer :
 
 <br/>
 
-#### ✨✨ Previous Version (v0.3) Binaries ✨✨    
-
-   [Appimage for All Linux flavors](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.3.0_u22.04py3.10/PhotoGlimmer-0.3.0-x86_64.AppImage) | 
-   [Python 3.8/Ubuntu 20.04 .Deb](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.3.0_linux/photoglimmer_0.3.0-1.ubuntu-focal_amd64.deb) | 
-   [Python 3.10/Ubuntu 22.04 .Deb](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.3.0_u22.04py3.10/photoglimmer_0.3.0-1.ubuntu-jammy_amd64.deb) |
-   [Windows Msi Installer](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.3.0/PhotoGlimmer-0.3.0.msi)
 
 <hr/>
 
@@ -250,7 +246,7 @@ Follow these steps to install dependencies and run PhotoGlimmer :
 
 
 ## License
-This Software is released under the [LGPL-2.1  License](https://opensource.org/license/lgpl-2-1/#)
+PhotoGlimmer is released under the [LGPL-2.1  License](https://opensource.org/license/lgpl-2-1/#)
 
 
 

@@ -42,33 +42,67 @@ jobs:
           name: photoglimmer-snap
           path: src/*.snap
 
+  # # 3. APPIMAGE BUILD
+  # build-appimage:
+  #   needs: get-version
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Set up Python 3.12.3
+  #       uses: actions/setup-python@v5
+  #       with:
+  #         python-version: '3.12.3'
+  #     - name: Install System Dependencies
+  #       run: |
+  #         sudo apt-get update
+  #         sudo apt-get install -y desktop-file-utils libgdk-pixbuf2.0-dev
+  #     - name: Build AppImage
+  #       working-directory: src/appimage
+  #       run: |
+  #         # Inject version into environment for the recipe
+  #         export APP_VERSION=${{ needs.get-version.outputs.version }}
+  #         python -m venv appimage_venv
+  #         source appimage_venv/bin/activate
+  #         pip install appimage-builder packaging==20.9
+  #         appimage-builder --recipe AppImageBuilder.yml
+  #     - uses: actions/upload-artifact@v4
+  #       with:
+  #         name: photoglimmer-appimage
+  #         path: src/appimage/*.AppImage
+
   # 3. APPIMAGE BUILD
   build-appimage:
-    needs: get-version
+    # Remove needs: get-version if your bash script handles it via sed
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python 3.12.3
+
+      - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12.3'
-      - name: Install System Dependencies
+          python-version: '3.12'
+
+      - name: Install Build Essentials
         run: |
           sudo apt-get update
-          sudo apt-get install -y desktop-file-utils libgdk-pixbuf2.0-dev
+          # desktop-file-utils: for desktop-file-validate
+          # libgdk-pixbuf2.0-dev: for gdk-pixbuf-query-loaders
+          # patchelf: required by appimage-builder for rpath fixing
+          sudo apt-get install -y desktop-file-utils libgdk-pixbuf2.0-dev patchelf
+
       - name: Build AppImage
         working-directory: src/appimage
         run: |
-          # Inject version into environment for the recipe
-          export APP_VERSION=${{ needs.get-version.outputs.version }}
-          python -m venv appimage_venv
-          source appimage_venv/bin/activate
-          pip install appimage-builder packaging==20.9
-          appimage-builder --recipe AppImageBuilder.yml
-      - uses: actions/upload-artifact@v4
+          chmod +x appimage_builder.sh
+          ./appimage_builder.sh
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
         with:
           name: photoglimmer-appimage
-          path: src/appimage/*.AppImage
+          path: |
+            src/appimage/*.AppImage
+            src/appimage/*.AppImage.zsync
 
   # 4. UNIFIED RELEASE
   create-release:

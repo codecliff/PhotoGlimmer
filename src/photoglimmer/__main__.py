@@ -32,6 +32,33 @@ from .backend.Interfaces import APP_NAME, APP_VERSION
 import os
 from pathlib import Path
 
+import os
+from importlib import resources
+from PySide6.QtGui import QFontDatabase
+
+def load_embedded_fonts():
+    """Load fonts from  this source code location. We carry our own fonts, on all platforms"""
+    # 1. Access the 'assets.fonts' sub-package within your 'photoglimmer' package
+    try:
+        # This returns a traversable path to the fonts directory
+        font_dir = resources.files("photoglimmer") / "assets" / "fonts"
+        
+        if not font_dir.is_dir():
+            return
+
+        for font_file in font_dir.glob("*.ttf"):
+            # Register the font with Qt's internal database
+            # We use str() because Qt expects a file path string
+            QFontDatabase.addApplicationFont(str(font_file))
+            
+    except Exception as e:
+        print(f"Warning: Could not load embedded fonts: {e}")
+
+# Call this immediately after creating   QApplication
+# app = QApplication(sys.argv)
+# load_embedded_fonts()
+
+
 def sanitize_image_path(raw_path: str):
     """
     Validates and normalizes a command-line file path.
@@ -97,6 +124,8 @@ def main():
     app = QApplication(sys.argv)
     app.setApplicationName(APP_NAME)
     app.setApplicationVersion(APP_VERSION)
+
+    load_embedded_fonts()
     
     icon_path = get_resource_path("icons/appicon-64.png")
     if icon_path.exists():
