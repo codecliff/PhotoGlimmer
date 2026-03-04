@@ -39,16 +39,17 @@
 
 ## ✨✨💻 💻  Download Latest  Version  Binaries 💻 💻 ✨✨         
 
-
+> - 💻 **V 0.9.6 Beta **:  
+    [ All installers for V 0.9.6 Beta ](https://github.com/codecliff/PhotoGlimmer/releases/tag/v0.9.6)
 
 > - 💻 **Ubuntu  22.04 .deb Installer**: Download and install using apt or gdebi 
-    * [Deb for Ubuntu 22.04 ](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.5.0_U2204/photoglimmer_0.5.0-1.ubuntu-jammy_amd64.deb)
+    * [Snap for Ubuntu 22.04 ](https://github.com/codecliff/PhotoGlimmer/releases/tag/v0.9.6)
 > - 💻 **Ubuntu  24.04 .deb Installer**: Download and install using apt or gdebi 
-    * [Deb for Ubuntu 24.04 ](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.5.0_U2404/photoglimmer_0.5.0-1.ubuntu-noble_amd64.deb)  
+    * [AppImage for All Linux flavors](https://github.com/codecliff/PhotoGlimmer/releases/tag/v0.9.6)  
 > - 💻 **Windows Installer:** Download and install, tested on Windows11 
-    * [Msi Installer](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.5.0_Win/PhotoGlimmer-0.5.0.msi)
+    * [Msi Installer](https://github.com/codecliff/PhotoGlimmer/releases/tag/v0.9.6)
 > - 💻 **Linux Flatpak Installer (Experimental):** Download and install 
-    * [Flatpak for All Linux flavors](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.5.0_Flatpak/PhotoGlimmer-0.5.0-x86_64.flatpak) 
+    * [Flatpak for All Linux flavors](https://github.com/codecliff/PhotoGlimmer/releases/tag/v0.9.6) 
 
 <br/>
 
