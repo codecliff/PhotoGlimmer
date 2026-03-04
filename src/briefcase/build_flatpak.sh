@@ -36,7 +36,7 @@ docker run --rm  \
     --env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     -v "$SRC_DIR:/project" \
     photoglimmer-builder \
-    briefcase package linux flatpak
+    briefcase package linux flatpak --non-interactive
     
 
 echo "✨ Flatpak build complete! Check src/briefcase/linux/ for the output."
