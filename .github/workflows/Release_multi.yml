@@ -129,8 +129,8 @@ jobs:
       - name: Package MSI
         working-directory: src/briefcase
         run: |
-          # The --clear flag forces Briefcase to delete the broken 'windows' folder and start fresh
-          briefcase package windows --clear
+          briefcase build
+          briefcase package windows -p msi  
 
 
       - name: Upload MSI Artifact
