@@ -10,7 +10,7 @@ RUN dnf update -y && dnf install -y \
 # 2. Install Briefcase
 
 RUN python3.12 -m pip install --upgrade pip && \
-    python3.12 -m pip install --upgrade briefcase cookiecutter binaryornot chardet setuptools
+    python3.12 -m pip install --upgrade setuptools briefcase cookiecutter binaryornot chardet 
 
 # 3. Setup Flatpak Runtimes
 RUN flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo && \
