@@ -1,0 +1,18 @@
+FROM fedora:40
+
+# 1. Install System Dependencies
+RUN dnf update -y && dnf install -y \
+    python3.12 python3.12-devel python3-pip \
+    flatpak flatpak-builder git wget gcc gcc-c++ \
+    desktop-file-utils libappstream-glib \
+    && dnf clean all
+
+# 2. Install Briefcase
+RUN pip3.12 install briefcase
+
+# 3. Setup Flatpak Runtimes
+RUN flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo && \
+    flatpak install -y flathub org.kde.Platform//6.8 org.kde.Sdk//6.8
+
+# Set PWD inside the container to your briefcase folder
+WORKDIR /project/briefcase

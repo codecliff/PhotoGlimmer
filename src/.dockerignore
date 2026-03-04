@@ -1,0 +1,19 @@
+# --- Python Caches ---
+**/__pycache__/
+**/*.py[cod]
+
+# --- AppImage artifacts (sibling to briefcase) ---
+../appimage/AppDir/
+../appimage/*.AppImage
+../appimage/appimage_venv/
+
+# --- Local Briefcase Builds ---
+briefcase/linux/
+briefcase/build/
+briefcase/dist/
+
+# --- Local Environments ---
+../appimage_venv/
+../venv/
+
+

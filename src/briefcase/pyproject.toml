@@ -47,7 +47,7 @@ sources = [
 # Briefcase uses the app name as the module name by default if it finds it in sources.
 console_app = false
 
-# Required python packages (Matches your requirements.txt logic)
+# Required python packages (Matches  requirements.txt logic)
 requires = [
     "PySide6-Essentials==6.8.1",
     "mediapipe==0.10.13",     
@@ -93,13 +93,32 @@ system_runtime_requires = [
 
 [tool.briefcase.app.photoglimmer.linux.flatpak]
 flatpak_runtime = "org.kde.Platform"
-flatpak_runtime_version = "6.6" # Stable version for Qt6/PySide6 support
+flatpak_runtime_version = "6.8"
 flatpak_sdk = "org.kde.Sdk"
+
+# use fedora system python instead of donwloading 
+# support_package = "system"
+
+# Ensure the app knows it's in a container
 finish_arg."filesystem=home" = true
 finish_arg."socket=wayland" = true
 finish_arg."socket=x11" = true
-finish_arg."device=dri" = true # Required for OpenGL/AI processing
-finish_arg."socket=pulseaudio" = false
+finish_arg."device=dri" = true
+
+# Force X11 and disable the buggy decoration plugin 
+# wayland tries to use systme Qt and app crashes with coredump
+"finish_arg.env=QT_QPA_PLATFORM" = "xcb"
+"finish_arg.env=QT_WAYLAND_DISABLE_WINDOWDECORATION" = "1"
+
+# This helps Qt find the right plugins inside the Flatpak
+# all our packages will be in /app/briefcase/app_packages 
+"finish_arg.env=PYTHONPATH" = "/usr/lib/python3.12/site-packages:/app/lib/python3.12/site-packages:/app/briefcase/app:/app/briefcase/app_packages"
+"finish_arg.env=GDK_PIXBUF_MODULE_FILE" = "/app/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders.cache"
+
+
+
+
+
 
 [tool.briefcase.app.photoglimmer.windows]
 requires = []

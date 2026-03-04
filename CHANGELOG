@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.6] - 2026-03-05
+
+
+### Added
+-   **Extensive code changes**
+-   **Entirely different Look and Feel and massive functionality upgrade**
+-   More feature rich canvas 
+-   Each rectangle is state aware and can be tweaked separately
+-   Enabled manual  edits for machine-generated masks   
+-   Undo Redo
+-   Caching
+-   Modularized 'strategies' to add new image tweak algorithms 
+-   Multiple new image tweaking algorithms added
+-   Facemesh for face-level edits
+-   Atomic, Cancelable exports
+-   All resource intensive operations moved to opencv
+-   Multiple UI Themes 
+-   Packaging & Distribution: Support for Flatpak, Snap, and Windows MSI; 
+-   Addition to Snap Store 
+-   Code documentation (comments) 
+-   Moved Appimage genration to appimage-builder	
+
+### Fixed
+
+-   Fixed dependency leakage in Appimage
+-   Fixed dependency leakage in Flatpak 
+
+
+
+
+
 ## [0.5.0] - 2025-08-17
 
 ### Added

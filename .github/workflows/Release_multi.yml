@@ -131,6 +131,33 @@ jobs:
           path: src/briefcase/dist/*.msi
 
   # 4. FLATPAK BUILD 
+  # build-flatpak:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Set up Python 3.12
+  #       uses: actions/setup-python@v5
+  #       with:
+  #         python-version: '3.12'
+  #     - name: Install Flatpak Tools
+  #       run: |
+  #         sudo apt-get update
+  #         sudo apt-get install -y flatpak flatpak-builder
+  #     - name: Install Briefcase
+  #       run: |
+  #         pip install briefcase
+  #     - name: Package Flatpak
+  #       working-directory: src/briefcase
+  #       run: |
+  #         # Briefcase handles the SDK and Runtime download inside the runner
+  #         briefcase build linux flatpak                    
+  #         briefcase package linux flatpak
+  #     - name: Upload Flatpak Artifact
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: photoglimmer-flatpak
+  #         path: src/briefcase/dist/*.flatpak
+
   build-flatpak:
     runs-on: ubuntu-latest
     steps:
@@ -145,18 +172,19 @@ jobs:
           sudo apt-get install -y flatpak flatpak-builder
       - name: Install Briefcase
         run: |
-          pip install briefcase
+          pip install briefcase 
       - name: Package Flatpak
-        working-directory: src/briefcase
+        working-directory: src/
         run: |
-          # Briefcase handles the SDK and Runtime download inside the runner
-          briefcase build linux flatpak                    
-          briefcase package linux flatpak
+              chmod +x briefcase/build_flatpak.sh
+              ./briefcase/build_flatpak.sh              
       - name: Upload Flatpak Artifact
         uses: actions/upload-artifact@v4
         with:
           name: photoglimmer-flatpak
           path: src/briefcase/dist/*.flatpak
+
+
 
   # 5. UNIFIED RELEASE (UPDATED)
   create-release:
