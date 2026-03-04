@@ -10,8 +10,12 @@ RUN dnf update -y && dnf install -y \
 # 2. Install Briefcase
 
 RUN python3.12 -m pip install --upgrade pip && \
-    python3.12 -m pip install --upgrade setuptools briefcase cookiecutter binaryornot chardet 
-
+    python3.12 -m pip install \
+    briefcase==0.3.26 \
+    cookiecutter==2.6.0 \
+    binaryornot==0.4.4 \
+    chardet==5.2.0 \
+    charset_normalizer==3.4.0
 # 3. Setup Flatpak Runtimes
 RUN flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo && \
     flatpak install -y flathub org.kde.Platform//6.8 org.kde.Sdk//6.8
