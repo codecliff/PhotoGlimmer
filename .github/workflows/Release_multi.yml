@@ -108,16 +108,18 @@ jobs:
 
   # 3. WINDOWS MSI BUILD 
   build-windows-msi:
-    runs-on: windows-latest
+    runs-on: windows-2025
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install Briefcase
+      - name: Install Dependencies
         run: |
-          pip install briefcase
+          python -m pip install --upgrade pip
+          # We force upgrade cookiecutter and binaryornot to pull in the Python 3 fixes
+          python -m pip install --upgrade briefcase cookiecutter binaryornot chardet
       - name: Package MSI
         working-directory: src/briefcase
         run: |

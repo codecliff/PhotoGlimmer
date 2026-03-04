@@ -26,7 +26,9 @@ docker build -t photoglimmer-builder -f "$BRIEFCASE_DIR/Dockerfile.flatpak" "$SR
 
 echo "🏗️ Starting containerized Briefcase build..."
 # Mount the local 'src/' folder to '/project' inside the container
-docker run --rm -it \
+# remove -it for github action 
+# docker run --rm -it \
+docker run --rm  \
     --privileged \
     --device /dev/fuse \
     --cap-add SYS_ADMIN \
