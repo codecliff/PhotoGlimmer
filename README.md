@@ -1,3 +1,14 @@
+![Version](https://img.shields.io/badge/Version-0.9.6_Beta2-success)
+![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
+![Platforms](https://img.shields.io/badge/Platforms-Linux%20%7C%20Windows-lightgray)
+![License](https://img.shields.io/badge/License-LGPL_v2-blue)
+[![Snap Store](https://img.shields.io/badge/Snap_Store-Photoglimmer-E95420?logo=snapcraft&logoColor=white)](https://snapcraft.io/photoglimmer)
+
+**Libraries & AI:** ![PySide6](https://img.shields.io/badge/PySide6-41CD52?logo=qt&logoColor=white)
+![OpenCV](https://img.shields.io/badge/OpenCV-5C3EE8?logo=opencv&logoColor=white)
+![MediaPipe](https://img.shields.io/badge/AI_Model-MediaPipe-FF7A59)
+![PiExif](https://img.shields.io/badge/Library-PiExif-yellow)
+
 # PhotoGlimmer - Illuminating  People In Photos  
 
 #### ✨✨ The photo editor that makes you look as sharp as the landscape behind you (or the vice versa) ✨✨
