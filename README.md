@@ -63,9 +63,11 @@
 
 > - 💻 **Linux AppImage**: Download , make executable and run 
     * [AppImage for All Linux flavors](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.9.6/PhotoGlimmer-latest-x86_64.AppImage)
-> - 💻 **Ubuntu  snap**: Download and install with `sudo snap install xyz.snap` 
-      OR, [Install from Ubuntu Software Store on your system](https://snapcraft.io/photoglimmer)
-    * [Snap for Ubuntu 22.04 ](https://github.com/codecliff/PhotoGlimmer/releases/tag/v0.9.6) 
+> - 💻 **Ubuntu  snap**: Download and install with `sudo snap install xyz.snap` <br />
+    * [Snap for Ubuntu 22.04 ](https://github.com/codecliff/PhotoGlimmer/releases/tag/v0.9.6)  <br/>
+      OR, The better option:  <br/>
+    *  [Install from Ubuntu Software Store on your system](https://snapcraft.io/photoglimmer)
+
 > - 💻 **Linux Flatpak Installer:** Download and install 
     * [Flatpak for All Linux flavors](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.9.6/PhotoGlimmer-0.9.6-x86_64.flatpak)
 > - 💻 **Windows Installer:** Download and install, tested on Windows11 
