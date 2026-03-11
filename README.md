@@ -11,7 +11,7 @@
 
 # PhotoGlimmer - Illuminating  People In Photos  
 
-#### ✨✨ The photo editor that makes you look as sharp as the landscape behind you (or the vice versa) ✨✨
+#### ✨✨ The photo editor that makes you look as sharp as the landscape behind you (or vice versa) ✨✨
 
 
 
@@ -25,13 +25,15 @@
 
 
 
-#### <center> ✨✨  Help Website  : [Home](https://codecliff.github.io/photoglimmer/)  | [User Manual](https://codecliff.github.io/photoglimmer/photoglimmer_help.html) | [Interactive](https://codecliff.github.io/photoglimmer/photoglimmer_guide.html) | [FAQs](https://codecliff.github.io/photoglimmer/photoglimmer_help.html#faq)   ✨✨ </center>
+#### <center> ✨✨  Help Website  : [Home](https://codecliff.github.io/photoglimmer/)  |  [Interactive Guide](https://codecliff.github.io/photoglimmer/photoglimmer_guide.html)   ✨✨ </center>
 
 
 
 ## ✨✨ :rocket: V 0.9.6 (February 2026) is a massive upgrade :rocket: ✨✨
+        * Totally new three panel interface 
         * Now select multiple people in the image separately 
-        * Edit each selection box separately         
+        * Edit each selection box separately
+        * Nested selctions to illuminate face separately from body           
         * Multiple new algorithms 
            * Separately edit Mid-tone/Shadow/Highlights
            * Face relighting 
@@ -39,15 +41,14 @@
            * Smart Skin
            * And all the tweaks already available 
            * White Balance, Color Temperature
-        * Manual mask edits to enhance generated selections 
+        * Manual mask edits to enhance AI-generated selections 
         * Live preview for slider move
         * Undo/Redo
         * Zoom/Pan 
         * Multiple application themes
         * Recent Files 
-        * Inbuilt help dialogue
-
-
+        * Offline help 
+        
 
 
 <br/>
