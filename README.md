@@ -19,6 +19,12 @@
 <br/>
 <br/>
 
+<p align="center">
+  <img width="80%" height="auto" src="filmstrip_aigen.png", alt= "Screenshot of PhotoGlimmer image editor"/>  
+</p>
+
+
+
 #### <center> ✨✨  Help Website  : [Home](https://codecliff.github.io/photoglimmer/)  | [User Manual](https://codecliff.github.io/photoglimmer/photoglimmer_help.html) | [Interactive](https://codecliff.github.io/photoglimmer/photoglimmer_guide.html) | [FAQs](https://codecliff.github.io/photoglimmer/photoglimmer_help.html#faq)   ✨✨ </center>
 
 
