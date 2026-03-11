@@ -1,4 +1,4 @@
-![Version](https://img.shields.io/badge/Version-0.9.6_Beta2-success)
+![Version](https://img.shields.io/badge/Version-0.9.6-success)
 ![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
 ![Platforms](https://img.shields.io/badge/Platforms-Linux%20%7C%20Windows-lightgray)
 ![License](https://img.shields.io/badge/License-LGPL_v2-blue)
@@ -29,7 +29,7 @@
 
 
 
-## ✨✨ :rocket: V 0.9.6 (February 2026) is a massive upgrade :rocket: ✨✨
+## ✨✨ :rocket: V 0.9.6 (March 2026) is a massive upgrade :rocket: ✨✨
         * Totally new three panel interface 
         * Now select multiple people in the image separately 
         * Edit each selection box separately
@@ -57,21 +57,23 @@
 
 ## ✨✨💻 💻  Download Latest  Version  Binaries 💻 💻 ✨✨         
 
-> - 💻 **V 0.9.6 Beta **:  
+> - 💻 **V 0.9.6 **:  
     [ All installers for V 0.9.6 Beta ](https://github.com/codecliff/PhotoGlimmer/releases/tag/v0.9.6)
 
-> - 💻 **Ubuntu  22.04 .deb Installer**: Download and install using apt or gdebi 
-    * [Snap for Ubuntu 22.04 ](https://github.com/codecliff/PhotoGlimmer/releases/tag/v0.9.6)
-> - 💻 **Ubuntu  24.04 .deb Installer**: Download and install using apt or gdebi 
-    * [AppImage for All Linux flavors](https://github.com/codecliff/PhotoGlimmer/releases/tag/v0.9.6)  
+
+> - 💻 **Linux AppImage**: Download , make executable and run 
+    * [AppImage for All Linux flavors](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.9.6/PhotoGlimmer-latest-x86_64.AppImage)
+> - 💻 **Ubuntu  snap**: Download and install with `sudo snap install xyz.snap --dangerous` 
+        Will be available in Ubuntu Software Store soon 
+    * [Snap for Ubuntu 22.04 ](https://github.com/codecliff/PhotoGlimmer/releases/tag/v0.9.6) 
+> - 💻 **Linux Flatpak Installer:** Download and install 
+    * [Flatpak for All Linux flavors](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.9.6/PhotoGlimmer-0.9.6-x86_64.flatpak)
 > - 💻 **Windows Installer:** Download and install, tested on Windows11 
-    * [Msi Installer](https://github.com/codecliff/PhotoGlimmer/releases/tag/v0.9.6)
-> - 💻 **Linux Flatpak Installer (Experimental):** Download and install 
-    * [Flatpak for All Linux flavors](https://github.com/codecliff/PhotoGlimmer/releases/tag/v0.9.6) 
+    * [Msi Installer](https://github.com/codecliff/PhotoGlimmer/releases/download/v0.9.6/PhotoGlimmer-0.9.6.msi)
 
 <br/>
 
- For checksums, refer to [release pages](https://github.com/codecliff/PhotoGlimmer/releases)  
+ For checksums, refer to [release pages](https://github.com/codecliff/PhotoGlimmer/releases/tag/v0.9.6)  
 
 <br/>
 
