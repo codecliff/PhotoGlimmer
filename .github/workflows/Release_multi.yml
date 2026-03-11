@@ -1,157 +1,233 @@
-name: ReleaseMulti
-
-# Note - EXPERIMENTAL WORKFLOW. NOT USED FOR ANY RELEASES. USE OS-SPECIFIC WORKFLOWS
-# Concurrent creation of Installers  using beeware-briefcase and github actions
-# Generates installers for multiple versions
-# Base on official recommendation from beeware project
-# https://briefcase.readthedocs.io/en/latest/how-to/ci.html
-# Author: Rahul Singh
-# https://github.com/codecliff/PhotoGlimmer
-# Runs manually, will prompt for release tag
+name: snap_appimage_096
 
 on:
-  #push:
-  #  branches: [ master ] 
-  #pull_request:
-  #  branches: [ master ]
   workflow_dispatch:
-      inputs: #when run, ask user to input release tag
-        reltag:
-          description: "tag for release, eg v1.0.0_linux"
-          required: true
-          default: "latest" 
-  #trigger when a relaease tag is pushed . disable this later
-  #push:
-  #  tags:
-  #    - 'v*'  
-
-permissions:  # not in briefcase official     
-    contents: write
-    pull-requests: write
-    repository-projects: write           
-
-
-# Cancel active CI runs for a PR before starting another run
-concurrency:
-  group: ${{ github.workflow}}-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
-
-env:
-  FORCE_COLOR: "1"
-
-defaults:
-  run:
-    shell: bash
+    inputs:
+      release_version:
+        description: 'Version Number- tag only (e.g., 0.9.6)'
+        required: true
+        default: '0.9.6'
+      release_type:
+        description: 'Type of release'
+        required: true
+        default: 'beta'
+        type: choice
+        options:
+          - beta
+          - stable
 
 jobs:
-  ci:
-    name: Test and Package
-    runs-on: ${{ matrix.runs-on }}
-    strategy:
-      fail-fast: false
-      matrix:
-        target: [ "Ubuntu-22.04", "Ubuntu-24.04"]
-        include:
-         
-          - target: "Ubuntu-22.04"
-            platform: "Linux"
-            output-format: "system"
-            runs-on: "ubuntu-latest"
-            pre-command: "sudo apt -y install socat"
-            briefcase-run-prefix: "xvfb-run"
-            briefcase-args: "--target ubuntu:22.04"
-
-          - target: "Ubuntu-24.04"
-            platform: "Linux"
-            output-format: "system"
-            runs-on: "ubuntu-latest"
-            pre-command: "sudo apt -y install socat"
-            briefcase-run-prefix: "xvfb-run"
-            briefcase-args: "--target ubuntu:24.04"
-
-         
-
+  # 1. SNAP BUILD (UNCHANGED)
+  build-snap:
+    runs-on: ubuntu-24.04
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
+      - name: Install Snapcraft
+        run: sudo snap install snapcraft --classic
+
+      - name: Build Snap (Destructive Mode)
+        working-directory: src
+        run: |
+          # We use destructive-mode to avoid LXD/Multipass overhead
+          # We point specifically to the snapcraft.yaml inside the snap/ folder
+          sudo snapcraft pack --destructive-mode #--snapcraft-file snap/snapcraft.yaml
+
+      - name: Upload Snap Artifact
+        uses: actions/upload-artifact@v4
         with:
-          python-version: "3.12"  # update with your targeted Python version
+          name: photoglimmer-snap
+          path: src/*.snap
 
+  # 2. APPIMAGE BUILD
+  # build-appimage:
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - uses: actions/checkout@v4
+
+  #     - name: Set up Python 3.12
+  #       uses: actions/setup-python@v5
+  #       with:
+  #         python-version: '3.12'
+
+  #     - name: Install System Dependencies
+  #       run: |
+  #         sudo apt-get update
+  #         sudo apt-get install -y desktop-file-utils libgdk-pixbuf2.0-dev
+
+  #     - name: Build AppImage
+  #       working-directory: src/appimage
+  #       run: |
+  #         # Inject version into environment for the recipe
+  #         export APP_VERSION=${{ github.event.inputs.release_version }}
+  #         python -m venv venv
+  #         source venv/bin/activate           
+  #         pip install appimage-builder==1.1.0
+  #         pip install packaging==20.9
+  #         appimage-builder --recipe AppImageBuilder.yml
+
+  #     - name: Upload AppImage Artifact
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: photoglimmer-appimage
+  #         path: src/appimage/*.AppImage
+
+  build-appimage:
+    # Remove needs: get-version if your bash script handles it via sed
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Build Essentials
+        run: |
+          sudo apt-get update
+          # desktop-file-utils: for desktop-file-validate
+          # libgdk-pixbuf2.0-dev: for gdk-pixbuf-query-loaders
+          # patchelf: required by appimage-builder for rpath fixing
+          sudo apt-get install -y desktop-file-utils libgdk-pixbuf2.0-dev patchelf
+
+      - name: Build AppImage
+        working-directory: src/appimage
+        run: |
+          chmod +x appimage_builder.sh
+          ./appimage_builder.sh
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: photoglimmer-appimage
+          path: |
+            src/appimage/*.AppImage
+            src/appimage/*.AppImage.zsync
+            
+
+  # 3. WINDOWS MSI BUILD 
+  build-windows-msi:
+    runs-on: windows-2025
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install briefcase==0.3.26 cookiecutter==2.6.0 binaryornot==0.4.4 chardet==5.2.0 charset_normalizer==3.4.0
+
+      # - name: Package MSI
+      #   working-directory: src/briefcase
+      #   run: |
+      #     # Create and Package for Windows MSI
+      #     briefcase build
+      #     briefcase package 
+      - name: Package MSI
+        working-directory: src/briefcase
+        run: |
+          briefcase build
+          briefcase package windows -p msi  
+
+
+      - name: Upload MSI Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: photoglimmer-msi
+          path: src/briefcase/dist/*.msi
+
+  # 4. FLATPAK BUILD 
+  # build-flatpak:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Set up Python 3.12
+  #       uses: actions/setup-python@v5
+  #       with:
+  #         python-version: '3.12'
+  #     - name: Install Flatpak Tools
+  #       run: |
+  #         sudo apt-get update
+  #         sudo apt-get install -y flatpak flatpak-builder
+  #     - name: Install Briefcase
+  #       run: |
+  #         pip install briefcase
+  #     - name: Package Flatpak
+  #       working-directory: src/briefcase
+  #       run: |
+  #         # Briefcase handles the SDK and Runtime download inside the runner
+  #         briefcase build linux flatpak                    
+  #         briefcase package linux flatpak
+  #     - name: Upload Flatpak Artifact
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: photoglimmer-flatpak
+  #         path: src/briefcase/dist/*.flatpak
+
+  build-flatpak:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Flatpak Tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y flatpak flatpak-builder
       - name: Install Briefcase
         run: |
-          python -m pip install -U pip setuptools wheel
-          python -m pip install briefcase
-
-      - name: Setup Environment
+          pip install briefcase 
+      - name: Package Flatpak
+        working-directory: src/
         run: |
-          
-          ${{ matrix.pre-command }}
-
-      - name: Build App
-        run: |
-          ${{ matrix.briefcase-build-prefix }} \
-          briefcase build \
-            ${{ matrix.platform || matrix.target }} \
-            ${{ matrix.output-format }} 
-            # \
-            # --test --no-input --log \
-            # ${{ matrix.briefcase-args }} \
-            # ${{ matrix.briefcase-build-args }}
-
-      # - name: Test App
-      #   run: |
-      #     ${{ matrix.briefcase-run-prefix }} \
-      #     briefcase run \
-      #       ${{ matrix.platform || matrix.target }} \
-      #       ${{ matrix.output-format }} \
-      #       --test --no-input --log \
-      #       ${{ matrix.briefcase-args }} \
-      #       ${{ matrix.briefcase-run-args }}
-
-      - name: Package App
-        run: |
-          ${{ matrix.briefcase-package-prefix }} \
-          briefcase package \
-            ${{ matrix.platform || matrix.target }} \
-            ${{ matrix.output-format }} \
-            --update --adhoc-sign --no-input --log \
-            ${{ matrix.briefcase-args }} \
-            ${{ matrix.briefcase-package-args }}
-
-      - name: Build and Package AppImage
-        # This step only runs on the ubuntu-22.04 job.
-        if: matrix.os == 'ubuntu-22.04'
-        run: |
-          briefcase create linux appimage
-          briefcase build linux appimage
-          briefcase package linux appimage #--no-docker
-     
-
-       
-      - name: Upload App
-        # Briefcase cannot create iOS artefacts; instead, apps
-        # must be packaged and published for iOS through Xcode.
-        if: matrix.target != 'iOS'
+              chmod +x briefcase/build_flatpak.sh
+              ./briefcase/build_flatpak.sh              
+      - name: Upload Flatpak Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: App-${{ matrix.target }}
-          path: dist
-          if-no-files-found: error
+          name: photoglimmer-flatpak
+          path: src/briefcase/dist/*.flatpak
 
-      - name: Upload AppImage Artifact
-        # This step only runs on the ubuntu-22.04 job.
-        if: matrix.os == 'ubuntu-22.04'
-        uses: actions/upload-artifact@v4
-        with:
-          name: PhotoGlimmer-AppImage-${{ matrix.os }}
-          path: linux/*.AppImage     
 
-      - name: Upload Log
-        if: failure()
-        uses: actions/upload-artifact@v4
+
+  # 5. UNIFIED RELEASE (UPDATED)
+  create-release:
+    needs: [build-snap, build-appimage, build-windows-msi, build-flatpak]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
         with:
-          name: Log-Failure-${{ matrix.target }}
-          path: logs/*
+          path: ./release-artifacts
+          merge-multiple: true
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ github.event.inputs.release_version }}
+          name: PhotoGlimmer v${{ github.event.inputs.release_version }} (${{ github.event.inputs.release_type }})
+          body: |
+            Automated multi-platform build for PhotoGlimmer v${{ github.event.inputs.release_version }}.
+            
+            **Available Formats:**
+            * Windows (.msi)
+            * Linux Snap (.snap)
+            * Linux AppImage (.AppImage)
+            * Linux Flatpak (.flatpak)
+            
+            Type: ${{ github.event.inputs.release_type }}
+          draft: false
+          prerelease: ${{ github.event.inputs.release_type == 'beta' }}
+          files: |
+            ./release-artifacts/*.snap
+            ./release-artifacts/*.AppImage
+            ./release-artifacts/*.msi
+            ./release-artifacts/*.flatpak
+          generate_release_notes: true

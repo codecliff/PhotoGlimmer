@@ -1,0 +1,67 @@
+name: photoglimmer
+title: PhotoGlimmer
+version: '0.9.6' # Hardcoded 
+summary: AI-powered lighting enhancement for people in photos
+description: |
+  PhotoGlimmer is a fully offline, lightweight, AI powered image editor 
+  that allows you to enhance people and  backgrounds separately. 
+  It is  fully contained,  and does not require a GPU. 
+  Provides simple rectangular selection abd  slider-based interface for editing images.
+  Download size may be large (~500 MBs) due to its fullly-containerized nature.
+contact: 
+  - mailto:8oaf978oh@mozmail.com  
+  - https://github.com/codecliff/PhotoGlimmer
+website: https://codecliff.github.io/photoglimmer/
+issues: https://github.com/codecliff/PhotoGlimmer/issues
+type: app
+base: core24 
+confinement: strict
+grade: stable
+
+# Note: Paths are relative to the project root (src/)
+icon: snap/gui/photoglimmer.png
+
+apps:
+  photoglimmer:
+    command: bin/python3 -m photoglimmer
+    extensions: [gnome]
+    plugs: [x11, wayland, opengl, home, desktop, removable-media]
+
+  safe-mode:
+    command: bin/python3 -m photoglimmer
+    extensions: [gnome]
+    environment:
+      USE_SOFTWARE_RENDER: "1"
+    plugs: [x11, wayland, opengl, home, desktop, removable-media]
+
+parts:
+  # Part 1: Install 3rd-party dependencies
+  photoglimmer-deps:
+    plugin: python
+    source: . # Looking for requirements.txt in src/
+    python-requirements:
+      - requirements.txt
+    stage-packages:
+      - libgl1
+      - libglib2.0-0
+      - libfontconfig1
+      - libxkbcommon-x11-0
+      - libxcb-cursor0 
+    build-packages:
+      - build-essential
+      - libgl1-mesa-dev
+
+  # Part 2: Copy source code
+  photoglimmer-src:
+    plugin: dump
+    source: . # Looking for photoglimmer/ folder in src/
+    organize:
+      photoglimmer: lib/python3.12/site-packages/photoglimmer
+    prime:
+      - lib/python3.12/site-packages/photoglimmer/*
+
+environment:
+  PYTHONPATH: $SNAP/lib/python3.12/site-packages
+  # Standardizing locale for UTF-8 symbol support
+  LANG: C.UTF-8
+  LC_ALL: C.UTF-8

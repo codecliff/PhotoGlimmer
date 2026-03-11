@@ -1,0 +1,138 @@
+# ###############################################################################
+# Copyright : Rahul Singh
+# URL       : https://github.com/codecliff/PhotoGlimmer
+# License   : LGPL
+# email     : codecliff@users.noreply.github.com
+# Disclaimer: No warranties, stated or implied.
+# Description :
+# This is the configuration file for generating appimages and deb  insallers for the PhotoGlimmer project
+# IMPORTANT: Make sure that dependencies list provides a version of mediapipe which does not require PyTorch,
+#            otherwise the install size will bloat up !
+#
+# This config file was generated with 0.3.23 using template: https://github.com/beeware/briefcase-template@v0.3.23
+# Last major Edit -  Feb 2026 (for v0.9.6)
+# ###############################################################################
+
+
+[tool.briefcase]
+project_name = "PhotoGlimmer"
+bundle = "io.github.codecliff.photoglimmer"
+version = "0.9.6" # Updated to match your current hardcoded version
+url = "https://github.com/codecliff/PhotoGlimmer"
+license.file = "../../LICENSE" # Path adjusted to reach root from src/briefcase/
+author = "Rahul Singh"
+author_email = "8oaf978oh@mozmail.com"
+
+[tool.briefcase.app.photoglimmer]
+formal_name = "PhotoGlimmer"
+description = "AI powered photo editor to tweak illumination separately on people or background"
+long_description = """
+PhotoGlimmer is a fully offline, lightweight, AI powered image editor 
+that allows you to enhance people and backgrounds separately. 
+It is fully contained, and does not require a GPU. 
+Provides simple rectangular selection and slider-based interface for editing images.
+Download size may be large (~500 MBs) due to its fully-containerized nature.
+"""
+
+# Path adjusted to reach icon from src/briefcase/
+icon = "../photoglimmer/icons/appicon"
+
+# Briefcase will look for a __main__.py inside the first source folder.
+# Since the file is in src/briefcase/, we point back to src/photoglimmer
+sources = [
+    "../photoglimmer",
+]
+
+# This tells Briefcase to run 'python -m photoglimmer'
+# Briefcase uses the app name as the module name by default if it finds it in sources.
+console_app = false
+
+# Required python packages (Matches  requirements.txt logic)
+requires = [
+    "PySide6-Essentials==6.8.1",
+    "mediapipe==0.10.13",     
+    "piexif ~= 1.1.3",    
+    "memory-profiler ~=0.61.0",
+    "line-profiler ~=4.2.0"    
+]
+
+[tool.briefcase.app.photoglimmer.linux]
+requires = []
+
+
+[tool.briefcase.app.photoglimmer.linux.system.debian]
+# Packages needed on the build machine to create the app
+system_requires = [
+    "build-essential",
+    "python3-dev",
+]
+
+# Packages the user needs installed to run the .deb
+# will not cause bloat on flatpak , which will get everything in bundled kde
+system_runtime_requires = [
+    "libxext6",
+    "libxrender1",
+    "libx11-xcb1",
+    "libxkbcommon-x11-0",
+    "libxcb-image0",
+    "libxcb-cursor0",
+    "libxcb-shape0",
+    "libxcb-randr0",
+    "libxcb-xfixes0",
+    "libxcb-sync1",
+    "libxcb-icccm4",
+    "libxcb-keysyms1",
+    "libfontconfig1",
+    "libsm6",
+    "libice6",
+    "libglib2.0-0",
+    "libgl1",
+    "libegl1",
+    "libdbus-1-3",
+]
+
+[tool.briefcase.app.photoglimmer.linux.flatpak]
+flatpak_runtime = "org.kde.Platform"
+flatpak_runtime_version = "6.8"
+flatpak_sdk = "org.kde.Sdk"
+
+# use fedora system python instead of donwloading 
+# support_package = "system"
+
+# Ensure the app knows it's in a container
+finish_arg."filesystem=home" = true
+finish_arg."socket=wayland" = true
+finish_arg."socket=x11" = true
+finish_arg."device=dri" = true
+
+# Force X11 and disable the buggy decoration plugin 
+# wayland tries to use systme Qt and app crashes with coredump
+"finish_arg.env=QT_QPA_PLATFORM" = "xcb"
+"finish_arg.env=QT_WAYLAND_DISABLE_WINDOWDECORATION" = "1"
+
+# This helps Qt find the right plugins inside the Flatpak
+# all our packages will be in /app/briefcase/app_packages 
+"finish_arg.env=PYTHONPATH" = "/usr/lib/python3.12/site-packages:/app/lib/python3.12/site-packages:/app/briefcase/app:/app/briefcase/app_packages"
+"finish_arg.env=GDK_PIXBUF_MODULE_FILE" = "/app/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders.cache"
+
+
+
+
+
+
+[tool.briefcase.app.photoglimmer.windows]
+requires = []
+# MSI specific configuration 
+guid = "79d8540a-1234-5678-90ab-cdef12345678"
+install_start_menu_shortcut = true
+install_desktop_shortcut = true
+upgrade_code = "a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6"
+
+
+[tool.briefcase.app.photoglimmer.macOS]
+universal_build = true
+min_os_version = "12.0"
+requires = [
+    "std-nslog~=1.0.3",
+]
+

@@ -1,0 +1,19 @@
+[Desktop Entry]
+Name=PhotoGlimmer
+Comment=AI-powered lighting enhancement
+# 'photoglimmer' is the command defined in snap yaml
+Exec=photoglimmer %U
+# Note: no extension for standard path Icon
+# ABSOLUTE PATH: Must include the .png extension
+Icon=${SNAP}/meta/gui/photoglimmer.png
+Type=Application
+Terminal=false
+Categories=Graphics;Photography;
+# This adds the right-click menu
+Actions=SafeMode;
+
+[Desktop Action SafeMode]
+Name=PhotoGlimmer (Safe Mode)
+# This calls the second app defined in yaml
+Exec=photoglimmer.safe-mode
+

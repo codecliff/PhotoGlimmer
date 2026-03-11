@@ -1,0 +1,29 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.env/
+.venv/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# VCS
+.git/
+.gitignore
+
+# IDE files
+.vscode/
+.idea/
+
+# Tests
+tests/
+
+actions/
+appimage/

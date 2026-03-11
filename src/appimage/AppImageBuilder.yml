@@ -1,0 +1,162 @@
+# all paths are relative to location of this file 
+# python3.12 -m venv appimage_venv
+# source appimage_venv/bin/activate
+# pip install appimage-builder
+# pip install packaging==20.9
+# appimage-builder --recipe AppImageBuilder.yml
+
+version: 1
+
+script:
+  - rm -rf AppDir || true
+  - mkdir -p AppDir/usr/src
+  - mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps
+  - mkdir -p AppDir/usr/share/applications
+  
+  # 1. Setup Icons
+  - cp resources/photoglimmer.png AppDir/usr/share/icons/hicolor/256x256/apps/photoglimmer.png
+
+  # 1 A. Desktop launcher (Fixes the WARNING about missing desktop entry)
+  - |
+      cat > AppDir/usr/share/applications/io.github.codecliff.photoglimmer.desktop <<EOF
+      [Desktop Entry]
+      Type=Application
+      Name=PhotoGlimmer
+      Icon=photoglimmer
+      Exec=python3.12 -m photoglimmer
+      Comment=AI local image editing application.
+      Categories=Graphics;
+      Terminal=false
+      EOF
+
+  # 2. Install Python Dependencies directly into AppDir
+  # Adding explicit 'packaging', 'pyparsing', and 'setuptools' to prevent ModuleNotFoundErrors
+  - |
+      ./appimage_venv/bin/python3.12 -m pip install \
+        --no-cache-dir \
+        --upgrade \
+        --ignore-installed \
+        --prefix=/usr \
+        --root=AppDir \
+        packaging \
+        setuptools \
+        pyparsing \
+        python-dateutil \
+        -r "$PWD/requirements.txt"
+
+  # 3. Copy Application Source
+  # This now includes photoglimmer/assets/fonts/ automatically
+  - cp -r ../photoglimmer AppDir/usr/src/
+
+AppDir:
+  path: ./AppDir
+
+  app_info:
+    id: io.github.codecliff.photoglimmer
+    name: PhotoGlimmer
+    icon: photoglimmer
+    # Overridden by APP_VERSION env variable in build script
+    version: 0.9.6
+    exec: usr/bin/python3.12
+    exec_args: -m photoglimmer
+
+  apt:
+    arch: amd64
+    sources:
+      - sourceline: deb [trusted=yes] http://archive.ubuntu.com/ubuntu jammy main universe
+      - sourceline: deb [trusted=yes] http://archive.ubuntu.com/ubuntu jammy-updates main universe
+      - sourceline: deb [trusted=yes] http://ppa.launchpad.net/deadsnakes/ppa/ubuntu jammy main
+
+    include:
+      - python3.12
+      - librsvg2-common
+      - libgdk-pixbuf2.0-0
+      - shared-mime-info
+      
+      # Qt 6 & GUI runtime libs (Extended based on ldd 'not found' scan)
+      - libgl1
+      - libegl1
+      - libglib2.0-0
+      - libdbus-1-3
+      - libfontconfig1
+      - libfreetype6
+      - libxrender1
+      - libgtk-3-0
+      - libxkbcommon-x11-0
+      - libxcb-cursor0
+      - libxcb-icccm4
+      - libxcb-image0
+      - libxcb-keysyms1
+      - libxcb-randr0
+      - libxcb-render-util0
+      - libxcb-xinerama0
+      - libxcb-xinput0
+      - libxcb-shape0
+      - libxcb-xfixes0
+      
+      # Fixes for the missing Qt6 modules identified in ldd
+      - libqt6waylandclient6
+      - libqt6waylandcompositor6
+      - qt6-wayland
+      - libqt6virtualkeyboard6
+      - libqt6statemachine6
+      - libqt63dcore6
+      - libqt63drender6
+      - libqt6pdf6
+      - libqt6webenginewidgets6
+      
+      # Math/Scientific support libraries (Fixes gfortran errors)
+      - libgfortran5
+      
+      # Base Fonts for system fallbacks
+      - fonts-dejavu
+      - fonts-noto-color-emoji
+
+    exclude:
+      - libasound2
+      - libgstreamer1.0-0
+      - gstreamer1.0-plugins-base
+
+  after_bundle:
+    - |
+        # 1. Find the loaders inside the AppDir (Required for SVG icons on Fedora)
+        LOADERS_PATH=$(find AppDir/usr/lib -name "libpixbufloader-svg.so")
+        LOADERS_DIR=$(dirname "$LOADERS_PATH")
+        CACHE_DIR=$(dirname "$LOADERS_DIR")
+        
+        # 2. LOCATE THE QUERY TOOL (Search host for gdk-pixbuf tool)
+        QUERY_TOOL=$(which gdk-pixbuf-query-loaders || \
+                     ls /usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/gdk-pixbuf-query-loaders || \
+                     ls /usr/bin/gdk-pixbuf-query-loaders)
+
+        if [ -z "$QUERY_TOOL" ]; then
+          echo "❌ CRITICAL ERROR: gdk-pixbuf-query-loaders NOT FOUND ON HOST."
+          exit 1
+        fi
+
+        $QUERY_TOOL "$LOADERS_DIR"/*.so > "$CACHE_DIR/loaders.cache"
+        sed -i "s|AppDir||g" "$CACHE_DIR/loaders.cache"
+
+  runtime:
+    env:
+      PYTHONPATH: '${APPDIR}/usr/lib/python3.12/site-packages:${APPDIR}/usr/src'
+      GDK_PIXBUF_MODULE_FILE: '${APPDIR}/usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders.cache'
+      # Order matters here: Internal paths come BEFORE host paths
+      LD_LIBRARY_PATH: '${APPDIR}/usr/lib/x86_64-linux-gnu:${APPDIR}/usr/lib/python3.12/site-packages/PySide6/Qt/lib:${LD_LIBRARY_PATH}'
+      
+      # Data Isolation (with fallbacks for system themes/cursors)
+      XDG_DATA_DIRS: '${APPDIR}/usr/share:/usr/share:/usr/local/share'
+      
+      # Compatibility & Localization
+      GTK_MODULES: ''
+      QT_QPA_PLATFORM: 'xcb'
+      LANG: 'C.UTF-8'
+      LC_ALL: 'C.UTF-8'
+      GALLIUM_DRIVER: 'llvmpipe'
+      MPLCONFIGDIR: '${HOME}/.config/matplotlib'
+
+AppImage:
+  arch: x86_64
+  file_name: PhotoGlimmer-latest-x86_64.AppImage
+  update-information: 'gh-releases-zsync|codecliff|PhotoGlimmer|latest|PhotoGlimmer-latest-x86_64.AppImage.zsync'
+  
