@@ -157,6 +157,7 @@ AppDir:
 
 AppImage:
   arch: x86_64
+  comp: zstd
   file_name: PhotoGlimmer-latest-x86_64.AppImage
   update-information: 'gh-releases-zsync|codecliff|PhotoGlimmer|latest|PhotoGlimmer-latest-x86_64.AppImage.zsync'
   
